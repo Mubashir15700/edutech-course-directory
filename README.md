@@ -1,4 +1,4 @@
-# 📚 EdTech Course Directory
+# 📚 EduTech Course Directory
 
 A responsive frontend application built using React and TypeScript that allows users to browse, search, filter, and paginate through a list of courses.
 
