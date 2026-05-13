@@ -10,7 +10,7 @@ function App() {
   const [sort, setSort] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
 
   // Filter logic
   const filteredCourses: Course[] =
@@ -32,8 +32,7 @@ function App() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedCourses = sortedCourses.slice(startIndex, startIndex + itemsPerPage);
 
-
-  const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedCourses.length / itemsPerPage);
 
   // Reset page on filter change
   useEffect(() => {
@@ -49,112 +48,165 @@ function App() {
     );
   }
 
-  // Error
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-red-500">Error loading courses</p>
-      </div>
-    );
-  }
+  const getVisiblePages = () => {
+    const pages = [];
 
-  // Empty state
-  if (filteredCourses.length === 0) {
-    return (
-      <div className="p-6 text-center">
-        <p>No courses found</p>
-      </div>
-    );
-  }
+    if (totalPages <= 7) {
+      return [...Array(totalPages)].map((_, i) => i + 1);
+    }
+
+    pages.push(1);
+
+    if (currentPage > 3) {
+      pages.push('...');
+    }
+
+    for (
+      let i = Math.max(2, currentPage - 1);
+      i <= Math.min(totalPages - 1, currentPage + 1);
+      i++
+    ) {
+      pages.push(i);
+    }
+
+    if (currentPage < totalPages - 2) {
+      pages.push('...');
+    }
+
+    pages.push(totalPages);
+
+    return pages;
+  };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        EdTech Course Directory
-      </h1>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-6xl mx-auto">
 
-      {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="Search by course name..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border p-2 rounded w-full"
-        />
+        {/* Title */}
+        <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
+          EdTech Course Directory
+        </h1>
 
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="border p-2 rounded w-full md:w-60"
-        >
-          <option value="">All Categories</option>
-          <option value="Frontend">Frontend</option>
-          <option value="Backend">Backend</option>
-          <option value="Database">Database</option>
-          <option value="Fullstack">Fullstack</option>
-          <option value="Design">Design</option>
-          <option value="DevOps">DevOps</option>
-          <option value="Cloud">Cloud</option>
-          <option value="Architecture">Architecture</option>
-        </select>
+        {/* Filters */}
+        <div className="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center">
 
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-          className="border p-2 rounded"
-        >
-          <option value="">Sort By</option>
-          <option value="name">Name</option>
-          <option value="rating">Rating</option>
-        </select>
-      </div>
+          <input
+            type="text"
+            placeholder="🔍 Search courses..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
 
-      {/* Course List */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {paginatedCourses.map((course) => (
-          <div key={course.id} className="border p-4 rounded shadow-sm">
-            <h2 className="text-xl font-semibold mb-2">{course.name}</h2>
-            <p className="text-gray-600">Instructor: {course.instructor}</p>
-            <p className="text-gray-600">Duration: {course.duration}</p>
-            <p className="text-gray-600">Category: {course.category}</p>
-            <p className="text-yellow-500 font-medium">
-              ⭐ {course.rating}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Pagination */}
-      <div className="flex justify-center items-center gap-2 mt-8">
-        <button
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-          disabled={currentPage === 1}
-          className="px-3 py-1 rounded border hover:bg-blue-500 hover:text-white transition"
-        >
-          Prev
-        </button>
-
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentPage(index + 1)}
-            className={`px-3 py-1 border rounded ${currentPage === index + 1
-              ? 'bg-blue-500 text-white'
-              : ''
-              }`}
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="border border-gray-300 p-2 rounded-lg w-full md:w-56 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
-            {index + 1}
-          </button>
-        ))}
+            <option value="">All Categories</option>
+            <option value="Frontend">Frontend</option>
+            <option value="Backend">Backend</option>
+            <option value="Database">Database</option>
+            <option value="Fullstack">Fullstack</option>
+            <option value="Design">Design</option>
+            <option value="DevOps">DevOps</option>
+            <option value="Cloud">Cloud</option>
+            <option value="Architecture">Architecture</option>
+          </select>
 
-        <button
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 rounded border hover:bg-blue-500 hover:text-white transition"
-        >
-          Next
-        </button>
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="border border-gray-300 p-2 rounded-lg w-full md:w-40 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            <option value="">Sort By</option>
+            <option value="name">Name</option>
+            <option value="rating">Rating</option>
+          </select>
+        </div>
+
+        {/* Course List */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px] items-start">
+          {error ?
+            <div className="flex justify-center items-center h-full col-span-full">
+              <p className="text-red-500 text-lg">Error loading courses</p>
+            </div>
+            : paginatedCourses.length > 0 ? (
+              paginatedCourses.map((course) => (
+                <div
+                  key={course.id}
+                  className="bg-white rounded-xl p-5 shadow-sm hover:shadow-lg transition duration-300 border border-gray-100"
+                >
+                  <h2 className="text-lg font-semibold text-gray-800 mb-2">
+                    {course.name}
+                  </h2>
+
+                  <p className="text-sm text-gray-500 mb-1">
+                    👨‍🏫 {course.instructor}
+                  </p>
+                  <p className="text-sm text-gray-500 mb-1">
+                    ⏱ {course.duration}
+                  </p>
+                  <p className="text-sm text-gray-500 mb-3">
+                    📂 {course.category}
+                  </p>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-yellow-500 font-medium">
+                      ⭐ {course.rating}
+                    </span>
+
+                    <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                      Course
+                    </span>
+                  </div>
+                </div>
+              ))) : (
+              <div className="flex justify-center items-center h-full col-span-full">
+                <p className="text-gray-500 text-lg">
+                  No courses match your filters
+                </p>
+              </div>
+            )}
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-center items-center gap-2 mt-10 flex-wrap">
+          <button
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 rounded-lg border bg-white hover:bg-blue-500 hover:text-white transition disabled:opacity-40"
+          >
+            Prev
+          </button>
+
+          {getVisiblePages().map((page, index) =>
+            page === '...' ? (
+              <span key={index} className="px-2">
+                ...
+              </span>
+            ) : (
+              <button
+                key={index}
+                onClick={() => setCurrentPage(page as number)}
+                className={`px-4 py-2 rounded-lg border transition ${currentPage === page
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-white hover:bg-blue-100'
+                  }`}
+              >
+                {page}
+              </button>
+            )
+          )}
+
+          <button
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 rounded-lg border bg-white hover:bg-blue-500 hover:text-white transition disabled:opacity-40"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

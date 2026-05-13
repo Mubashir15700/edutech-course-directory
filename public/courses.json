@@ -118,5 +118,45 @@
         "duration": "8 weeks",
         "category": "Cloud",
         "rating": 4.7
+    },
+    {
+        "id": 16,
+        "name": "Kubernetes Essentials",
+        "instructor": "Mia Wilson",
+        "duration": "7 weeks",
+        "category": "DevOps",
+        "rating": 4.5
+    },
+    {
+        "id": 17,
+        "name": "Python for Data Science",
+        "instructor": "Liam Johnson",
+        "duration": "10 weeks",
+        "category": "Data Science",
+        "rating": 4.8
+    },
+    {
+        "id": 18,
+        "name": "Machine Learning Basics",
+        "instructor": "Isabella Davis",
+        "duration": "12 weeks",
+        "category": "Data Science",
+        "rating": 4.9
+    },
+    {
+        "id": 19,
+        "name": "Cybersecurity Fundamentals",
+        "instructor": "Mason Miller",
+        "duration": "6 weeks",
+        "category": "Security",
+        "rating": 4.4
+    },
+    {
+        "id": 20,
+        "name": "Blockchain Technology",
+        "instructor": "Ava Wilson",
+        "duration": "8 weeks",
+        "category": "Blockchain",
+        "rating": 4.6
     }
 ]
