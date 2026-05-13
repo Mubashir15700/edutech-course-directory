@@ -1,0 +1,122 @@
+[
+    {
+        "id": 1,
+        "name": "React Basics",
+        "instructor": "John Doe",
+        "duration": "6 weeks",
+        "category": "Frontend",
+        "rating": 4.5
+    },
+    {
+        "id": 2,
+        "name": "Node.js Mastery",
+        "instructor": "Jane Smith",
+        "duration": "8 weeks",
+        "category": "Backend",
+        "rating": 4.7
+    },
+    {
+        "id": 3,
+        "name": "Advanced React",
+        "instructor": "Michael Lee",
+        "duration": "10 weeks",
+        "category": "Frontend",
+        "rating": 4.8
+    },
+    {
+        "id": 4,
+        "name": "MongoDB Essentials",
+        "instructor": "Sarah Connor",
+        "duration": "5 weeks",
+        "category": "Database",
+        "rating": 4.3
+    },
+    {
+        "id": 5,
+        "name": "Fullstack MERN",
+        "instructor": "David Kim",
+        "duration": "12 weeks",
+        "category": "Fullstack",
+        "rating": 4.9
+    },
+    {
+        "id": 6,
+        "name": "JavaScript Fundamentals",
+        "instructor": "Emma Watson",
+        "duration": "4 weeks",
+        "category": "Frontend",
+        "rating": 4.4
+    },
+    {
+        "id": 7,
+        "name": "Express.js Crash Course",
+        "instructor": "Chris Evans",
+        "duration": "3 weeks",
+        "category": "Backend",
+        "rating": 4.2
+    },
+    {
+        "id": 8,
+        "name": "TypeScript for Beginners",
+        "instructor": "Robert Brown",
+        "duration": "6 weeks",
+        "category": "Frontend",
+        "rating": 4.6
+    },
+    {
+        "id": 9,
+        "name": "System Design Basics",
+        "instructor": "Alice Green",
+        "duration": "7 weeks",
+        "category": "Architecture",
+        "rating": 4.7
+    },
+    {
+        "id": 10,
+        "name": "Next.js Deep Dive",
+        "instructor": "Daniel White",
+        "duration": "9 weeks",
+        "category": "Frontend",
+        "rating": 4.8
+    },
+    {
+        "id": 11,
+        "name": "REST API Development",
+        "instructor": "Sophia Martinez",
+        "duration": "6 weeks",
+        "category": "Backend",
+        "rating": 4.5
+    },
+    {
+        "id": 12,
+        "name": "GraphQL Basics",
+        "instructor": "James Anderson",
+        "duration": "5 weeks",
+        "category": "Backend",
+        "rating": 4.4
+    },
+    {
+        "id": 13,
+        "name": "UI/UX Design Fundamentals",
+        "instructor": "Olivia Taylor",
+        "duration": "4 weeks",
+        "category": "Design",
+        "rating": 4.6
+    },
+    {
+        "id": 14,
+        "name": "Docker for Developers",
+        "instructor": "William Scott",
+        "duration": "6 weeks",
+        "category": "DevOps",
+        "rating": 4.3
+    },
+    {
+        "id": 15,
+        "name": "AWS Cloud Basics",
+        "instructor": "Ethan Harris",
+        "duration": "8 weeks",
+        "category": "Cloud",
+        "rating": 4.7
+    }
+]
