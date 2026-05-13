@@ -16,7 +16,11 @@ function App() {
   const filteredCourses: Course[] =
     data?.filter((course) => {
       return (
-        course.name.toLowerCase().includes(search.toLowerCase()) &&
+        (
+          course.name.toLowerCase().includes(search.toLowerCase()) ||
+          course.instructor.toLowerCase().includes(search.toLowerCase()) ||
+          course.category.toLowerCase().includes(search.toLowerCase())
+        ) &&
         (category ? course.category === category : true)
       );
     }) || [];
@@ -38,15 +42,6 @@ function App() {
   useEffect(() => {
     setCurrentPage(1);
   }, [search, category]);
-
-  // Loading
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-lg font-semibold">Loading courses...</p>
-      </div>
-    );
-  }
 
   const getVisiblePages = () => {
     const pages = [];
@@ -84,7 +79,7 @@ function App() {
 
         {/* Title */}
         <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
-          EdTech Course Directory
+          EduTech Course Directory
         </h1>
 
         {/* Filters */}
@@ -127,54 +122,58 @@ function App() {
 
         {/* Course List */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px] items-start">
-          {error ?
+          {isLoading ?
             <div className="flex justify-center items-center h-full col-span-full">
-              <p className="text-red-500 text-lg">Error loading courses</p>
+              <p className="text-lg font-semibold">Loading courses...</p>
             </div>
-            : paginatedCourses.length > 0 ? (
-              paginatedCourses.map((course) => (
-                <div
-                  key={course.id}
-                  className="bg-white rounded-xl p-5 shadow-sm hover:shadow-lg transition duration-300 border border-gray-100"
-                >
-                  <h2 className="text-lg font-semibold text-gray-800 mb-2">
-                    {course.name}
-                  </h2>
-
-                  <p className="text-sm text-gray-500 mb-1">
-                    👨‍🏫 {course.instructor}
-                  </p>
-                  <p className="text-sm text-gray-500 mb-1">
-                    ⏱ {course.duration}
-                  </p>
-                  <p className="text-sm text-gray-500 mb-3">
-                    📂 {course.category}
-                  </p>
-
-                  <div className="flex justify-between items-center">
-                    <span className="text-yellow-500 font-medium">
-                      ⭐ {course.rating}
-                    </span>
-
-                    <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">
-                      Course
-                    </span>
-                  </div>
-                </div>
-              ))) : (
+            : error ?
               <div className="flex justify-center items-center h-full col-span-full">
-                <p className="text-gray-500 text-lg">
-                  No courses match your filters
-                </p>
+                <p className="text-red-500 text-lg">Error loading courses</p>
               </div>
-            )}
+              : paginatedCourses.length > 0 ? (
+                paginatedCourses.map((course) => (
+                  <div
+                    key={course.id}
+                    className="bg-white rounded-xl p-5 shadow-sm hover:shadow-lg transition duration-300 border border-gray-100"
+                  >
+                    <h2 className="text-lg font-semibold text-gray-800 mb-2">
+                      {course.name}
+                    </h2>
+
+                    <p className="text-sm text-gray-500 mb-1">
+                      👨‍🏫 {course.instructor}
+                    </p>
+                    <p className="text-sm text-gray-500 mb-1">
+                      ⏱ {course.duration}
+                    </p>
+                    <p className="text-sm text-gray-500 mb-3">
+                      📂 {course.category}
+                    </p>
+
+                    <div className="flex justify-between items-center">
+                      <span className="text-yellow-500 font-medium">
+                        ⭐ {course.rating}
+                      </span>
+
+                      <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                        Course
+                      </span>
+                    </div>
+                  </div>
+                ))) : (
+                <div className="flex justify-center items-center h-full col-span-full">
+                  <p className="text-gray-500 text-lg">
+                    No courses match your filters
+                  </p>
+                </div>
+              )}
         </div>
 
         {/* Pagination */}
         <div className="flex justify-center items-center gap-2 mt-10 flex-wrap">
           <button
             onClick={() => setCurrentPage((prev) => prev - 1)}
-            disabled={currentPage === 1}
+            disabled={currentPage === 1 || totalPages === 0}
             className="px-4 py-2 rounded-lg border bg-white hover:bg-blue-500 hover:text-white transition disabled:opacity-40"
           >
             Prev
@@ -201,7 +200,7 @@ function App() {
 
           <button
             onClick={() => setCurrentPage((prev) => prev + 1)}
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages || totalPages === 0}
             className="px-4 py-2 rounded-lg border bg-white hover:bg-blue-500 hover:text-white transition disabled:opacity-40"
           >
             Next
