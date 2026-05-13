@@ -1,73 +1,66 @@
-# React + TypeScript + Vite
+# 📚 EdTech Course Directory
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive frontend application built using React and TypeScript that allows users to browse, search, filter, and paginate through a list of courses.
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
+https://edutech-course-directory-three.vercel.app/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🧠 Features
+- 📦 Display courses in a clean card layout
+- 🔍 Search courses by name
+- 🏷️ Filter courses by category
+- 🔢 Client-side pagination
+- ⏳ Loading and error states
+- ⚡ Fast and responsive UI
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
+- **React (Vite)**
+- **TypeScript**
+- **Redux Toolkit**
+- **RTK Query**
+- **Tailwind CSS**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 📂 Project Structure
+src/
+├── app/ # Redux store setup
+├── features/
+│ └── courses/ # RTK Query API
+├── components/ # Reusable UI components
+├── pages/ # Page components
+├── App.tsx # Main app logic
+└── main.tsx # Entry point
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🔌 API Handling
+- Used **RTK Query** to fetch course data
+- Mocked API using a static JSON file (`courses.json`)
+- Simulated network delay to demonstrate loading states
+
+---
+
+## 🎯 Key Decisions
+- Used **client-side filtering and pagination** for performance and simplicity
+- Chose **pagination over infinite scroll** for better control and usability
+- Used **Tailwind CSS** for rapid UI development and consistency
+
+---
+
+## 📦 Installation
+```bash
+git clone https://github.com/Mubashir15700/edutech-course-directory.git
+cd edutech-course-directory
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🚀 Deployment
+Deployed using Vercel
