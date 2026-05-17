@@ -3,7 +3,7 @@ import type { Course } from "../features/courses/types";
 const CourseCard = ({ course }: { course: Course }) => {
     return (
         <div
-            key={course.id}
+            key={course._id}
             className="bg-white rounded-xl p-5 shadow-sm hover:shadow-lg transition duration-300 border border-gray-100"
         >
             <h2 className="text-lg font-semibold text-gray-800 mb-2">
