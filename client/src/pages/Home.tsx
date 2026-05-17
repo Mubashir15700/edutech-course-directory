@@ -1,47 +1,27 @@
 import { useEffect, useState } from 'react';
 import { useGetCoursesQuery } from '../features/courses/coursesApi';
-import type { Course } from '../features/courses/types';
 import CourseCard from '../components/CourseCard';
 import Pagination from '../components/Pagination';
 import Filters from '../components/Filters';
 
 function App() {
-    const { data, isLoading, error } = useGetCoursesQuery();
-
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('');
     const [sort, setSort] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
 
-    const itemsPerPage = 6;
+    const { data, isLoading, error } = useGetCoursesQuery({
+        page: currentPage,
+        limit: 6,
+        search,
+        category,
+    });
 
-    // Filter logic
-    const filteredCourses: Course[] =
-        data?.filter((course) => {
-            const query = search.toLowerCase();
-
-            return (
-                (
-                    course.name.toLowerCase().includes(query) ||
-                    course.instructor.toLowerCase().includes(query) ||
-                    course.category.toLowerCase().includes(query)
-                ) &&
-                (category ? course.category === category : true)
-            );
-        }) || [];
-
-    // Sorting logic
-    const sortedCourses = [...filteredCourses].sort((a, b) => {
+    const sortedCourses = [...(data?.data || [])].sort((a, b) => {
         if (sort === 'rating') return b.rating - a.rating;
         if (sort === 'name') return a.name.localeCompare(b.name);
         return 0;
     });
-
-    // Pagination logic
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const paginatedCourses = sortedCourses.slice(startIndex, startIndex + itemsPerPage);
-
-    const totalPages = Math.ceil(sortedCourses.length / itemsPerPage);
 
     // Reset page on filter change
     useEffect(() => {
@@ -77,9 +57,9 @@ function App() {
                             <div className="flex justify-center items-center h-full col-span-full">
                                 <p className="text-red-500 text-lg">Error loading courses</p>
                             </div>
-                            : paginatedCourses.length > 0 ? (
-                                paginatedCourses.map((course) => (
-                                    <CourseCard key={course.id} course={course} />
+                            : sortedCourses.length > 0 ? (
+                                sortedCourses.map((course) => (
+                                    <CourseCard key={course._id} course={course} />
                                 ))) : (
                                 <div className="flex justify-center items-center h-full col-span-full">
                                     <p className="text-gray-500 text-lg">
@@ -92,7 +72,7 @@ function App() {
                 {/* Pagination */}
                 <Pagination
                     currentPage={currentPage}
-                    totalPages={totalPages}
+                    totalPages={data?.totalPages || 1}
                     setCurrentPage={setCurrentPage}
                 />
             </div>

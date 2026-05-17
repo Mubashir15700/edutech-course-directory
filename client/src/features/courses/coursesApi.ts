@@ -1,20 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { Course } from './types';
-
-const baseQuery = fetchBaseQuery({ baseUrl: '/' });
-
-// Simulate network delay by wrapping the base query
-const delayedBaseQuery = async (args: any, api: any, extraOptions: any) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second delay
-    return baseQuery(args, api, extraOptions);
-};
+import type { CoursesResponse } from './types';
 
 export const coursesApi = createApi({
     reducerPath: 'coursesApi',
-    baseQuery: delayedBaseQuery,
+    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
     endpoints: (builder) => ({
-        getCourses: builder.query<Course[], void>({
-            query: () => 'courses.json',
+        getCourses: builder.query<
+            CoursesResponse,
+            { page?: number; limit?: number; search?: string; category?: string }
+        >({
+            query: ({ page = 1, limit = 6, search = '', category = '' }) => ({
+                url: '/courses',
+                params: { page, limit, search, category },
+            }),
         }),
     }),
 });
