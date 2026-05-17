@@ -5,12 +5,13 @@ import {
     updateCourse,
     deleteCourse,
 } from "../controllers/ courseController";
+import { adminOnly, protect } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
-router.get("/", getCourses);
-router.post("/", createCourse);
-router.put("/:id", updateCourse);
-router.delete("/:id", deleteCourse);
+router.get("/", protect, getCourses);
+router.post("/", protect, adminOnly, createCourse);
+router.put("/:id", protect, adminOnly, updateCourse);
+router.delete("/:id", protect, adminOnly, deleteCourse);
 
 export default router;
