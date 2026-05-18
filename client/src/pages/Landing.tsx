@@ -2,19 +2,41 @@ import { Link } from "react-router-dom";
 
 export default function Landing() {
     return (
-        <div className="h-screen flex flex-col justify-center items-center bg-gray-100">
-            <h1 className="text-4xl font-bold mb-4">EdTech Platform</h1>
-            <p className="mb-6 text-gray-600">
-                Learn. Grow. Build your future.
-            </p>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 px-4">
+            <div className="text-center max-w-2xl">
 
-            <div className="flex gap-4">
-                <Link to="/login" className="px-4 py-2 bg-blue-500 text-white rounded">
-                    Login
-                </Link>
-                <Link to="/register" className="px-4 py-2 border rounded">
-                    Register
-                </Link>
+                {/* Title */}
+                <h1 className="text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
+                    Elevate Your Learning Journey 🚀
+                </h1>
+
+                {/* Subtitle */}
+                <p className="text-lg text-gray-600 mb-8">
+                    Discover top-rated tech courses, learn from industry experts, and
+                    build real-world skills that accelerate your career.
+                </p>
+
+                {/* Buttons */}
+                <div className="flex justify-center gap-4">
+                    <Link
+                        to="/login"
+                        className="px-6 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition duration-300"
+                    >
+                        Get Started
+                    </Link>
+
+                    <Link
+                        to="/register"
+                        className="px-6 py-3 bg-white border border-gray-300 rounded-xl hover:bg-gray-100 transition duration-300"
+                    >
+                        Create Account
+                    </Link>
+                </div>
+
+                {/* Optional small note */}
+                <p className="text-sm text-gray-400 mt-6">
+                    Join hundreds of learners already growing their skills
+                </p>
             </div>
         </div>
     );

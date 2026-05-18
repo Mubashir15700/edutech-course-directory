@@ -1,58 +1,40 @@
-import { Link } from "react-router-dom";
-import { useGetCoursesQuery, useDeleteCourseMutation } from "../../features/courses/coursesApi";
+import { useGetCoursesQuery } from "../../features/courses/coursesApi";
 
 export default function Dashboard() {
-    const [deleteCourse] = useDeleteCourseMutation();
-
-    const { data, isLoading } = useGetCoursesQuery({
+    const { data } = useGetCoursesQuery({
         page: 1,
-        limit: 50,
+        limit: 100,
         search: "",
         category: "",
     });
 
-    const handleDelete = async (id: string) => {
-        try {
-            await deleteCourse(id).unwrap(); // only succeeds if API success
-        } catch (err) {
-            console.error("Delete failed", err);
-        }
-    };
+    const totalCourses = data?.total || 0;
 
-    if (isLoading) return <p>Loading...</p>;
+    // fake for now (later from API)
+    const totalLearners = 120;
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+        <div>
+            <h2 className="text-2xl font-bold mb-6">Dashboard Overview</h2>
 
-            <Link
-                to="/admin/add"
-                className="bg-green-500 text-white px-4 py-2 rounded mb-4 inline-block"
-            >
-                Add Course
-            </Link>
+            {/* Stats */}
+            <div className="grid md:grid-cols-3 gap-6">
 
-            <div className="grid gap-4">
-                {data?.data.map((course) => (
-                    <div key={course._id} className="border p-4 rounded">
-                        <h2 className="font-semibold">{course.name}</h2>
+                <div className="bg-white p-6 rounded-xl shadow">
+                    <p className="text-gray-500 text-sm">Total Courses</p>
+                    <h3 className="text-2xl font-bold">{totalCourses}</h3>
+                </div>
 
-                        <div className="flex gap-3 mt-2">
-                            <Link
-                                to={`/admin/edit/${course._id}`}
-                                className="text-blue-500"
-                            >
-                                Edit
-                            </Link>
-                            <button
-                                onClick={() => handleDelete(course._id)}
-                                className="text-red-500"
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                ))}
+                <div className="bg-white p-6 rounded-xl shadow">
+                    <p className="text-gray-500 text-sm">Total Learners</p>
+                    <h3 className="text-2xl font-bold">{totalLearners}</h3>
+                </div>
+
+                <div className="bg-white p-6 rounded-xl shadow">
+                    <p className="text-gray-500 text-sm">Active Users</p>
+                    <h3 className="text-2xl font-bold">89</h3>
+                </div>
+
             </div>
         </div>
     );

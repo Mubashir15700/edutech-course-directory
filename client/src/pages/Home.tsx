@@ -29,53 +29,51 @@ function App() {
     }, [search, category, sort]);
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto">
 
-                {/* Title */}
-                <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
-                    EduTech Course Directory
-                </h1>
+            {/* Title */}
+            <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
+                EduTech Course Directory
+            </h1>
 
-                {/* Filters */}
-                <Filters
-                    search={search}
-                    setSearch={setSearch}
-                    category={category}
-                    setCategory={setCategory}
-                    sort={sort}
-                    setSort={setSort}
-                />
+            {/* Filters */}
+            <Filters
+                search={search}
+                setSearch={setSearch}
+                category={category}
+                setCategory={setCategory}
+                sort={sort}
+                setSort={setSort}
+            />
 
-                {/* Course List */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px] items-start">
-                    {isLoading ?
+            {/* Course List */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px] items-start">
+                {isLoading ?
+                    <div className="flex justify-center items-center h-full col-span-full">
+                        <p className="text-lg font-semibold">Loading courses...</p>
+                    </div>
+                    : error ?
                         <div className="flex justify-center items-center h-full col-span-full">
-                            <p className="text-lg font-semibold">Loading courses...</p>
+                            <p className="text-red-500 text-lg">Error loading courses</p>
                         </div>
-                        : error ?
+                        : sortedCourses.length > 0 ? (
+                            sortedCourses.map((course) => (
+                                <CourseCard key={course._id} course={course} />
+                            ))) : (
                             <div className="flex justify-center items-center h-full col-span-full">
-                                <p className="text-red-500 text-lg">Error loading courses</p>
+                                <p className="text-gray-500 text-lg">
+                                    No courses match your filters
+                                </p>
                             </div>
-                            : sortedCourses.length > 0 ? (
-                                sortedCourses.map((course) => (
-                                    <CourseCard key={course._id} course={course} />
-                                ))) : (
-                                <div className="flex justify-center items-center h-full col-span-full">
-                                    <p className="text-gray-500 text-lg">
-                                        No courses match your filters
-                                    </p>
-                                </div>
-                            )}
-                </div>
-
-                {/* Pagination */}
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={data?.totalPages || 1}
-                    setCurrentPage={setCurrentPage}
-                />
+                        )}
             </div>
+
+            {/* Pagination */}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={data?.totalPages || 1}
+                setCurrentPage={setCurrentPage}
+            />
         </div>
     );
 }

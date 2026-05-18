@@ -16,6 +16,6 @@ const userSchema = new Schema<IUser>({
         enum: ["admin", "learner"],
         default: "learner",
     },
-});
+}, { timestamps: true });
 
 export default mongoose.model<IUser>("User", userSchema);

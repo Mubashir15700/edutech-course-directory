@@ -4,7 +4,7 @@ import {
     createCourse,
     updateCourse,
     deleteCourse,
-} from "../controllers/ courseController";
+} from "../controllers/courseController";
 import { adminOnly, protect } from "../middleware/authMiddleware";
 
 const router = express.Router();
