@@ -38,9 +38,13 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
 
     if (user && (await bcrypt.compare(password, user.password))) {
+        // Update activity timestamp on successful login
+        user.lastActiveAt = new Date();
+        await user.save();
+
         res.json({
             _id: user._id,
             name: user.name,

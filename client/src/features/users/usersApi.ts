@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { UsersResponse } from "./types";
+import type { IUser, UsersResponse } from "./types";
 
 export const usersApi = createApi({
     reducerPath: "usersApi",
+    tagTypes: ["UserProfile"],
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_BACKEND_URL,
         prepareHeaders: (headers) => {
@@ -26,7 +27,25 @@ export const usersApi = createApi({
                 method: "DELETE",
             }),
         }),
+
+        getProfile: builder.query<IUser, void>({
+            query: () => ({
+                url: "/users/profile",
+                method: "GET",
+            }),
+        }),
+
+        completeLesson: builder.mutation<void, { courseId: string; lessonId: string }>({
+            query: ({ courseId, lessonId }) => ({
+                url: `/users/courses/complete-lesson`,
+                method: "POST",
+                body: { courseId, lessonId },
+            }),
+            // This tells RTK Query to instantly re-fetch getProfile, 
+            // updating your progress bars across the screen in real-time!
+            invalidatesTags: [{ type: "UserProfile" }],
+        }),
     }),
 });
 
-export const { useGetLearnersQuery, useDeleteUserMutation } = usersApi;
+export const { useGetLearnersQuery, useDeleteUserMutation, useGetProfileQuery, useCompleteLessonMutation } = usersApi;

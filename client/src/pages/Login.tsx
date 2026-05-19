@@ -41,7 +41,7 @@ export default function Login() {
             if (user.role === "admin") {
                 navigate("/admin");
             } else {
-                navigate("/home");
+                navigate("/courses");
             }
         } catch (err: any) {
             setErrorMsg(err?.data?.message || "Login failed");

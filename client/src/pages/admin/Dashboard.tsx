@@ -3,9 +3,9 @@ import { useGetDashboardStatsQuery } from "../../features/dashboard/dashboardApi
 export default function Dashboard() {
     const { data, isLoading } = useGetDashboardStatsQuery();
 
-    const totalCourses = data?.data?.courses || 0;
-    const totalLearners = data?.data?.learners || 0;
-    const totalActiveUsers = data?.data?.activeUsers || 0;
+    const totalCourses = data?.totalCourses || 0;
+    const totalLearners = data?.totalLearners || 0;
+    const activeUsers = data?.activeUsers || 0;
 
     if (isLoading) {
         return (
@@ -37,7 +37,7 @@ export default function Dashboard() {
                     <p className="text-gray-500 text-sm">Active Users</p>
 
                     <h3 className="text-3xl font-bold mt-2">
-                        {totalActiveUsers}
+                        {activeUsers}
                     </h3>
                 </div>
             </div>

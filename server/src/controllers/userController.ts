@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import bcrypt from "bcryptjs";
+import { AuthRequest } from "../middleware/authMiddleware";
 import User from "../models/User";
 
 export const getLearners = async (req: Request, res: Response) => {
@@ -40,5 +42,87 @@ export const deleteUser = async (req: Request, res: Response) => {
     res.json({
         success: true,
         message: "User deleted",
+    });
+};
+
+export const getUserProfile = async (req: AuthRequest, res: Response) => {
+    const user = await User.findById(req.user._id).populate("enrolledCourses.courseId");
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const coursesWithProgress = user.enrolledCourses.map((enrollment: any) => {
+        const course = enrollment.courseId;
+
+        const totalLessons = course.lessons?.length || 0;
+        const completedCount = enrollment.completedLessons?.length || 0;
+
+        const percentage = totalLessons > 0
+            ? Math.round((completedCount / totalLessons) * 100)
+            : 0;
+
+        return {
+            _id: course._id,
+            name: course.name,
+            instructor: course.instructor,
+            thumbnail: course.thumbnail,
+            category: course.category,
+            progress: percentage,
+            totalLessons,
+            completedLessonsCount: completedCount
+        };
+    });
+
+    res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        enrolledCourses: coursesWithProgress
+    });
+};
+
+export const markLessonComplete = async (req: AuthRequest, res: Response) => {
+    const { courseId, lessonId } = req.body;
+
+    await User.updateOne(
+        { _id: req.user._id, "enrolledCourses.courseId": courseId },
+        {
+            // Adds the lesson ID to the tracking array safely without duplication
+            $addToSet: { "enrolledCourses.$.completedLessons": lessonId }
+        }
+    );
+
+    res.status(200).json({ message: "Lesson marked complete successfully." });
+};
+
+export const updatePassword = async (req: AuthRequest, res: Response) => {
+    const userId = req.user?._id;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+        res.status(400);
+        throw new Error("Current and new passwords are required");
+    }
+
+    const user = await User.findById(userId).select("+password");
+
+    if (!user) {
+        res.status(404);
+        throw new Error("User not found");
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if (!isMatch) {
+        res.status(401);
+        throw new Error("Current password is incorrect");
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({
+        success: true,
+        message: "Password updated successfully",
     });
 };

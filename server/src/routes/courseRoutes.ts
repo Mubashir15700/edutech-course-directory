@@ -1,6 +1,7 @@
 import express from "express";
 import {
     getCourses,
+    getCourseById,
     createCourse,
     updateCourse,
     deleteCourse,
@@ -12,10 +13,14 @@ import {
     createCourseSchema,
     updateCourseSchema,
 } from "../validations/courseValidation";
+import { trackUserActivity } from "../middleware/activityMiddleware";
 
 const router = express.Router();
 
-router.get("/", protect, asyncHandler(getCourses));
+router.use(trackUserActivity); // Apply the activity tracking middleware to all course routes
+
+router.get("/", asyncHandler(getCourses));
+router.get("/:id", asyncHandler(getCourseById));
 router.post(
     "/",
     protect,

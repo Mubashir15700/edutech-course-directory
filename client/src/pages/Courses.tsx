@@ -4,11 +4,17 @@ import CourseCard from "../components/CourseCard";
 import Pagination from "../components/Pagination";
 import Filters from "../components/Filters";
 
-function App() {
+function Courses() {
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("");
     const [sort, setSort] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+
+    // Access query parameters for category filter (e.g., from landing page links)
+    const urlParams = new URLSearchParams(window.location.search);
+    useEffect(() => {
+        setCategory(urlParams.get("category") || "");
+    }, []);
 
     const { data, isLoading, error } = useGetCoursesQuery({
         page: currentPage,
@@ -83,4 +89,4 @@ function App() {
     );
 }
 
-export default App;
+export default Courses;

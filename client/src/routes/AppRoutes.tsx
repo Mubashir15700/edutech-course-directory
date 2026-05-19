@@ -3,19 +3,23 @@ import { Routes, Route } from "react-router-dom";
 import Landing from "../pages/Landing";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Home from "../pages/Home";
+import Courses from "../pages/Courses";
+import CourseDetails from "../pages/CourseDetails";
 
 import Dashboard from "../pages/admin/Dashboard";
 import AddCourse from "../pages/admin/AddCourse";
 import EditCourse from "../pages/admin/EditCourse";
 import CoursesPage from "../pages/admin/CoursesPage";
 import LearnersPage from "../pages/admin/LearnersPage";
+import Profile from "../pages/Profile";
+import AdminProfile from "../pages/admin/Profile";
 
 import NotFound from "../pages/NotFound";
 
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import AdminRoute from "./AdminRoute";
+
 import AdminLayout from "../layouts/AdminLayout";
 import LearnerLayout from "../layouts/LearnerLayout";
 
@@ -24,6 +28,12 @@ export default function AppRoutes() {
         <Routes>
             {/* Public */}
             <Route path="/" element={<Landing />} />
+            <Route path="/courses" element={<LearnerLayout />}>
+                <Route index element={<Courses />} />
+            </Route>
+            <Route path="/courses/:id" element={<LearnerLayout />}>
+                <Route index element={<CourseDetails />} />
+            </Route>
             <Route
                 path="/login"
                 element={
@@ -42,16 +52,11 @@ export default function AppRoutes() {
             />
 
             {/* Learner */}
-            <Route
-                path="/home"
-                element={
-                    <ProtectedRoute>
-                        <LearnerLayout />
-                    </ProtectedRoute>
-                }
-            >
-                <Route index element={<Home />} />
-            </Route>
+            <Route path="/profile" element={
+                <ProtectedRoute>
+                    <Profile />
+                </ProtectedRoute>
+            } />
 
             {/* Admin */}
             <Route
@@ -65,6 +70,7 @@ export default function AppRoutes() {
                 <Route index element={<Dashboard />} />
                 <Route path="courses" element={<CoursesPage />} />
                 <Route path="learners" element={<LearnersPage />} />
+                <Route path="profile" element={<AdminProfile />} />
             </Route>
             <Route
                 path="/admin/add"

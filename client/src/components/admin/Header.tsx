@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Header() {
     const navigate = useNavigate();
@@ -20,11 +20,21 @@ export default function Header() {
 
                 {/* Profile + Logout */}
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-500 text-white flex items-center justify-center rounded-full">
-                        {user?.name?.charAt(0)}
-                    </div>
+                    {/* Wrap Avatar and Name inside a clickable Link container */}
+                    <Link
+                        to="/admin/profile"
+                        className="flex items-center gap-2 group cursor-pointer focus:outline-none"
+                        title="View your profile"
+                    >
+                        <div className="w-8 h-8 bg-blue-500 text-white flex items-center justify-center rounded-full">
+                            {user?.name?.charAt(0)}
+                        </div>
 
-                    <span className="text-sm">{user?.name}</span>
+                        <span className="text-sm">{user?.name}</span>
+                    </Link>
+
+                    {/* Vertical Separator */}
+                    <span className="h-4 w-px bg-gray-200 hidden sm:block"></span>
 
                     <button
                         onClick={handleLogout}

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { CoursesResponse } from "./types";
+import type { CourseDetailResponse, CoursesResponse } from "./types";
 
 export const coursesApi = createApi({
     reducerPath: "coursesApi",
@@ -27,6 +27,10 @@ export const coursesApi = createApi({
                 url: "/courses",
                 params: { page, limit, search, category },
             }),
+        }),
+
+        getCourseById: builder.query<CourseDetailResponse, string>({
+            query: (id) => `/courses/${id}`,
         }),
 
         createCourse: builder.mutation({
@@ -59,4 +63,5 @@ export const {
     useCreateCourseMutation,
     useUpdateCourseMutation,
     useDeleteCourseMutation,
+    useGetCourseByIdQuery
 } = coursesApi;

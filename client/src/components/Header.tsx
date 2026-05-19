@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Header() {
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function Header() {
             {/* Logo / Title */}
             <h1
                 className="text-xl font-bold text-blue-600 cursor-pointer"
-                onClick={() => navigate("/home")}
+                onClick={() => navigate("/courses")}
             >
                 EduTech
             </h1>
@@ -28,19 +28,48 @@ export default function Header() {
                 </button>
 
                 {/* Profile */}
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-500 text-white flex items-center justify-center rounded-full">
-                        {user?.name?.charAt(0)}
-                    </div>
+                <div className="flex items-center gap-4">
+                    {user ? (
+                        <div className="flex items-center gap-3">
 
-                    <span className="text-sm font-medium">{user?.name}</span>
+                            {/* Wrap Avatar and Name inside a clickable Link container */}
+                            <Link
+                                to="/profile"
+                                className="flex items-center gap-2 group cursor-pointer focus:outline-none"
+                                title="View your profile"
+                            >
+                                {/* Profile Avatar with First Letter - Added scale effect on hover */}
+                                <div className="w-8 h-8 bg-blue-600 text-white flex items-center justify-center rounded-full font-semibold uppercase text-sm shadow-sm select-none group-hover:bg-blue-700 transition-colors duration-200">
+                                    {user?.name?.charAt(0)}
+                                </div>
 
-                    <button
-                        onClick={handleLogout}
-                        className="text-red-500 text-sm hover:underline"
-                    >
-                        Logout
-                    </button>
+                                {/* User Name - Added color change on hover */}
+                                <span className="text-sm font-medium text-gray-700 hidden sm:block group-hover:text-blue-600 transition-colors duration-200">
+                                    {user?.name}
+                                </span>
+                            </Link>
+
+                            {/* Vertical Separator */}
+                            <span className="h-4 w-px bg-gray-200 hidden sm:block"></span>
+
+                            {/* Logout Button */}
+                            <button
+                                onClick={handleLogout}
+                                className="text-sm font-medium text-red-500 hover:text-red-600 transition duration-200 focus:outline-none"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-3">
+                            <Link
+                                to="/login"
+                                className="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl shadow-sm transition duration-200"
+                            >
+                                Sign In
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

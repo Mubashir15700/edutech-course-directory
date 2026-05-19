@@ -12,9 +12,14 @@ export const getCourses = async (req: Request, res: Response) => {
         query.category = category;
     }
 
+    // Define exactly what fields the Course Card grid component needs
+    const selectedFields = "name instructor duration category price level thumbnail rating";
+
     const courses = await Course.find(query)
+        .select(selectedFields)
         .skip((Number(page) - 1) * Number(limit))
-        .limit(Number(limit));
+        .limit(Number(limit))
+        .sort({ createdAt: -1 });
 
     const total = await Course.countDocuments(query);
 
@@ -23,6 +28,19 @@ export const getCourses = async (req: Request, res: Response) => {
         total,
         page: Number(page),
         totalPages: Math.ceil(total / Number(limit)),
+    });
+};
+
+export const getCourseById = async (req: Request, res: Response) => {
+    const course = await Course.findById(req.params.id);
+
+    if (!course) {
+        res.status(404);
+        throw new Error("Course not found");
+    }
+
+    res.json({
+        data: course,
     });
 };
 
