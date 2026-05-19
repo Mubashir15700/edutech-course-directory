@@ -18,7 +18,7 @@ export default function Table<T>({
     return (
         <div className="bg-white rounded-xl shadow overflow-hidden">
             {/* Scroll Container */}
-            <div className="min-h-[500px] max-h-[500px] overflow-y-auto">
+            <div className="min-h-[400px] max-h-[400px] overflow-y-auto">
                 <table className="w-full text-left border-collapse">
                     <thead className="bg-gray-100 text-sm text-gray-600 uppercase sticky top-0 z-10">
                         <tr>
@@ -35,7 +35,15 @@ export default function Table<T>({
                     </thead>
 
                     <tbody>
-                        {data.map((row: any, rowIndex) => (
+                        {data.length === 0 ? (
+                            <tr className="h-full">
+                                <td colSpan={columns.length + (renderActions ? 1 : 0)} className="text-center align-middle text-gray-500 font-medium">
+                                    <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
+                                        <span>No data available</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : data.map((row: any, rowIndex) => (
                             <tr
                                 key={rowIndex}
                                 className="border-t hover:bg-gray-50 transition"
@@ -58,12 +66,6 @@ export default function Table<T>({
                     </tbody>
                 </table>
             </div>
-
-            {data.length === 0 && (
-                <div className="p-6 text-center text-gray-500">
-                    No data available
-                </div>
-            )}
         </div>
     );
 }

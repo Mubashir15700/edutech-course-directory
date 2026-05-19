@@ -33,11 +33,9 @@ export const createCourse = async (req: Request, res: Response) => {
 };
 
 export const updateCourse = async (req: Request, res: Response) => {
-    const updated = await Course.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-    );
+    const updated = await Course.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+    });
 
     if (!updated) {
         res.status(404);
@@ -60,4 +58,3 @@ export const deleteCourse = async (req: Request, res: Response) => {
         message: "Course deleted",
     });
 };
-

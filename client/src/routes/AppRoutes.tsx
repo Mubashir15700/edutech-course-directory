@@ -24,16 +24,22 @@ export default function AppRoutes() {
         <Routes>
             {/* Public */}
             <Route path="/" element={<Landing />} />
-            <Route path="/login" element={
-                <PublicRoute>
-                    <Login />
-                </PublicRoute>
-            } />
-            <Route path="/register" element={
-                <PublicRoute>
-                    <Register />
-                </PublicRoute>
-            } />
+            <Route
+                path="/login"
+                element={
+                    <PublicRoute>
+                        <Login />
+                    </PublicRoute>
+                }
+            />
+            <Route
+                path="/register"
+                element={
+                    <PublicRoute>
+                        <Register />
+                    </PublicRoute>
+                }
+            />
 
             {/* Learner */}
             <Route
@@ -48,21 +54,34 @@ export default function AppRoutes() {
             </Route>
 
             {/* Admin */}
-            <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+            <Route
+                path="/admin"
+                element={
+                    <AdminRoute>
+                        <AdminLayout />
+                    </AdminRoute>
+                }
+            >
                 <Route index element={<Dashboard />} />
                 <Route path="courses" element={<CoursesPage />} />
                 <Route path="learners" element={<LearnersPage />} />
             </Route>
-            <Route path="/admin/add" element={
-                <AdminRoute>
-                    <AddCourse />
-                </AdminRoute>
-            } />
-            <Route path="/admin/edit/:id" element={
-                <AdminRoute>
-                    <EditCourse />
-                </AdminRoute>
-            } />
+            <Route
+                path="/admin/add"
+                element={
+                    <AdminRoute>
+                        <AddCourse />
+                    </AdminRoute>
+                }
+            />
+            <Route
+                path="/admin/edit/:id"
+                element={
+                    <AdminRoute>
+                        <EditCourse />
+                    </AdminRoute>
+                }
+            />
 
             {/* 404 */}
             <Route path="*" element={<NotFound />} />

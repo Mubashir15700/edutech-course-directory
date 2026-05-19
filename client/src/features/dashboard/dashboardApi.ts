@@ -24,6 +24,4 @@ export const dashboardApi = createApi({
     }),
 });
 
-export const {
-    useGetDashboardStatsQuery,
-} = dashboardApi;
+export const { useGetDashboardStatsQuery } = dashboardApi;

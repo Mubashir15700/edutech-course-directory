@@ -12,16 +12,16 @@ export default function Header() {
 
     return (
         <div className="bg-white shadow px-6 py-4 flex justify-between items-center">
-
             {/* Logo / Title */}
-            <h1 className="text-xl font-bold text-blue-600 cursor-pointer"
-                onClick={() => navigate("/home")}>
+            <h1
+                className="text-xl font-bold text-blue-600 cursor-pointer"
+                onClick={() => navigate("/home")}
+            >
                 EduTech
             </h1>
 
             {/* Right Section */}
             <div className="flex items-center gap-5">
-
                 {/* Notifications */}
                 <button className="text-gray-600 hover:text-black text-lg">
                     🔔

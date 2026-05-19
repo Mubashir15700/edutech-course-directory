@@ -4,9 +4,14 @@ import User from "../models/User";
 export const getLearners = async (req: Request, res: Response) => {
     const { page = "1", limit = "6", search = "" } = req.query;
 
+    const searchFilter = { $regex: search, $options: "i" };
+
     const query: any = {
-        name: { $regex: search, $options: "i" },
         role: req.query.role || "learner",
+        $or: [
+            { name: searchFilter },
+            { email: searchFilter }
+        ]
     };
 
     const learners = await User.find(query)

@@ -5,11 +5,6 @@ import { asyncHandler } from "../utils/asyncHandler";
 
 const router = express.Router();
 
-router.get(
-    "/stats",
-    protect,
-    adminOnly,
-    asyncHandler(getDashboardStats)
-);
+router.get("/stats", protect, adminOnly, asyncHandler(getDashboardStats));
 
 export default router;

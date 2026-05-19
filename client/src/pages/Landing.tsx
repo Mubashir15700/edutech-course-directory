@@ -5,19 +5,25 @@ export default function Landing() {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 px-4">
             <div className="text-center max-w-2xl">
 
+                {/* Brand */}
+                <p className="text-blue-600 font-semibold tracking-wide mb-3">
+                    EduTech Course Directory
+                </p>
+
                 {/* Title */}
-                <h1 className="text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
+                <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-5 leading-tight">
                     Elevate Your Learning Journey 🚀
                 </h1>
 
                 {/* Subtitle */}
-                <p className="text-lg text-gray-600 mb-8">
-                    Discover top-rated tech courses, learn from industry experts, and
-                    build real-world skills that accelerate your career.
+                <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                    Discover industry-focused courses, learn from expert instructors,
+                    and build real-world skills to advance your tech career.
                 </p>
 
                 {/* Buttons */}
-                <div className="flex justify-center gap-4">
+                <div className="flex justify-center gap-4 flex-wrap">
+
                     <Link
                         to="/login"
                         className="px-6 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition duration-300"
@@ -31,12 +37,14 @@ export default function Landing() {
                     >
                         Create Account
                     </Link>
+
                 </div>
 
-                {/* Optional small note */}
-                <p className="text-sm text-gray-400 mt-6">
-                    Join hundreds of learners already growing their skills
+                {/* Footer Note */}
+                <p className="text-sm text-gray-400 mt-8">
+                    Join learners building the future with modern tech skills
                 </p>
+
             </div>
         </div>
     );

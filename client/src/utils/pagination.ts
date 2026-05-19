@@ -8,7 +8,7 @@ export const getVisiblePages = (totalPages: number, currentPage: number) => {
     pages.push(1);
 
     if (currentPage > 3) {
-        pages.push('...');
+        pages.push("...");
     }
 
     for (
@@ -20,7 +20,7 @@ export const getVisiblePages = (totalPages: number, currentPage: number) => {
     }
 
     if (currentPage < totalPages - 2) {
-        pages.push('...');
+        pages.push("...");
     }
 
     pages.push(totalPages);

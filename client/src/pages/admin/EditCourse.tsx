@@ -1,5 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetCoursesQuery, useUpdateCourseMutation } from "../../features/courses/coursesApi";
+import {
+    useGetCoursesQuery,
+    useUpdateCourseMutation,
+} from "../../features/courses/coursesApi";
 import CourseForm from "../../components/admin/CourseForm";
 
 export default function EditCourse() {
@@ -13,8 +16,7 @@ export default function EditCourse() {
         category: "",
     });
 
-    const [updateCourse, { isLoading: isUpdating }] =
-        useUpdateCourseMutation();
+    const [updateCourse, { isLoading: isUpdating }] = useUpdateCourseMutation();
 
     const course = data?.data.find((c) => c._id === id);
 

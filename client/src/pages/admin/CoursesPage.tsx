@@ -10,13 +10,12 @@ import Pagination from "../../components/Pagination";
 import Filters from "../../components/Filters";
 
 export default function CoursesPage() {
-    const [search, setSearch] = useState('');
-    const [category, setCategory] = useState('');
-    const [sort, setSort] = useState('');
+    const [search, setSearch] = useState("");
+    const [category, setCategory] = useState("");
+    const [sort, setSort] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [deleteCourse, { isLoading: isDeleting }] =
-        useDeleteCourseMutation();
+    const [deleteCourse, { isLoading: isDeleting }] = useDeleteCourseMutation();
 
     const { data, isLoading, error } = useGetCoursesQuery({
         page: currentPage,
@@ -26,13 +25,14 @@ export default function CoursesPage() {
     });
 
     const sortedCourses = [...(data?.data || [])].sort((a, b) => {
-        if (sort === 'rating') return b.rating - a.rating;
-        if (sort === 'name') return a.name.localeCompare(b.name);
+        if (sort === "rating") return b.rating - a.rating;
+        if (sort === "name") return a.name.localeCompare(b.name);
         return 0;
     });
 
     const handleDelete = async (id: string) => {
-        if (!window.confirm("Are you sure you want to delete this course?")) return;
+        if (!window.confirm("Are you sure you want to delete this course?"))
+            return;
 
         try {
             await deleteCourse(id).unwrap();
@@ -99,7 +99,10 @@ export default function CoursesPage() {
                     data={sortedCourses}
                     renderActions={(course) => (
                         <div className="flex justify-end gap-3">
-                            <Link to={`/admin/edit/${course._id}`} className="text-blue-600">
+                            <Link
+                                to={`/admin/edit/${course._id}`}
+                                className="text-blue-600"
+                            >
                                 Edit
                             </Link>
                             <button

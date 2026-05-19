@@ -9,8 +9,8 @@ import Pagination from "../../components/Pagination";
 import Filters from "../../components/Filters";
 
 export default function LearnersPage() {
-    const [search, setSearch] = useState('');
-    const [sort, setSort] = useState('');
+    const [search, setSearch] = useState("");
+    const [sort, setSort] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
     const { data, isLoading, error } = useGetLearnersQuery({
@@ -18,8 +18,7 @@ export default function LearnersPage() {
         limit: 10,
         search,
     });
-    const [deleteUser, { isLoading: isDeleting }] =
-        useDeleteUserMutation();
+    const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
     const handleDelete = async (id: string) => {
         if (!window.confirm("Delete this learner?")) return;
@@ -68,8 +67,7 @@ export default function LearnersPage() {
         {
             header: "Joined",
             accessor: "createdAt",
-            render: (value: string) =>
-                new Date(value).toLocaleDateString(),
+            render: (value: string) => new Date(value).toLocaleDateString(),
         },
     ];
 

@@ -9,7 +9,16 @@ interface FiltersProps {
     sortOptions?: { value: string; label: string }[];
 }
 
-const Filters = ({ search, setSearch, searchPlaceholder, category, setCategory, sort, setSort, sortOptions }: FiltersProps) => {
+const Filters = ({
+    search,
+    setSearch,
+    searchPlaceholder,
+    category,
+    setCategory,
+    sort,
+    setSort,
+    sortOptions,
+}: FiltersProps) => {
     return (
         <div className="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center">
             <input
@@ -58,7 +67,7 @@ const Filters = ({ search, setSearch, searchPlaceholder, category, setCategory, 
                 )}
             </select>
         </div>
-    )
-}
+    );
+};
 
-export default Filters
+export default Filters;

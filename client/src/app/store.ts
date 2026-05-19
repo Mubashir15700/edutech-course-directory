@@ -1,7 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { coursesApi } from '../features/courses/coursesApi';
-import { usersApi } from '../features/users/usersApi';
-import { dashboardApi } from '../features/dashboard/dashboardApi';
+import { configureStore } from "@reduxjs/toolkit";
+import { coursesApi } from "../features/courses/coursesApi";
+import { usersApi } from "../features/users/usersApi";
+import { dashboardApi } from "../features/dashboard/dashboardApi";
 
 export const store = configureStore({
     reducer: {
@@ -10,5 +10,9 @@ export const store = configureStore({
         [dashboardApi.reducerPath]: dashboardApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(coursesApi.middleware, usersApi.middleware, dashboardApi.middleware),
+        getDefaultMiddleware().concat(
+            coursesApi.middleware,
+            usersApi.middleware,
+            dashboardApi.middleware
+        ),
 });

@@ -12,8 +12,12 @@ export const usersApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        getLearners: builder.query<UsersResponse, { page: number; limit: number; search: string }>({
-            query: ({ page, limit, search }) => `/users?role=learner&page=${page}&limit=${limit}&search=${search}`,
+        getLearners: builder.query<
+            UsersResponse,
+            { page: number; limit: number; search: string }
+        >({
+            query: ({ page, limit, search }) =>
+                `/users?role=learner&page=${page}&limit=${limit}&search=${search}`,
         }),
 
         deleteUser: builder.mutation({

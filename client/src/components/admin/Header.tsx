@@ -16,9 +16,7 @@ export default function Header() {
 
             <div className="flex items-center gap-4">
                 {/* Notifications */}
-                <button className="text-gray-600 hover:text-black">
-                    🔔
-                </button>
+                <button className="text-gray-600 hover:text-black">🔔</button>
 
                 {/* Profile + Logout */}
                 <div className="flex items-center gap-3">

@@ -1,8 +1,5 @@
 import express from "express";
-import {
-    getLearners,
-    deleteUser,
-} from "../controllers/userController";
+import { getLearners, deleteUser } from "../controllers/userController";
 import { adminOnly, protect } from "../middleware/authMiddleware";
 import { asyncHandler } from "../utils/asyncHandler";
 

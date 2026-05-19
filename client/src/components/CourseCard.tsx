@@ -10,15 +10,9 @@ const CourseCard = ({ course }: { course: Course }) => {
                 {course.name}
             </h2>
 
-            <p className="text-sm text-gray-500 mb-1">
-                👨‍🏫 {course.instructor}
-            </p>
-            <p className="text-sm text-gray-500 mb-1">
-                ⏱ {course.duration}
-            </p>
-            <p className="text-sm text-gray-500 mb-3">
-                📂 {course.category}
-            </p>
+            <p className="text-sm text-gray-500 mb-1">👨‍🏫 {course.instructor}</p>
+            <p className="text-sm text-gray-500 mb-1">⏱ {course.duration}</p>
+            <p className="text-sm text-gray-500 mb-3">📂 {course.category}</p>
 
             <div className="flex justify-between items-center">
                 <span className="text-yellow-500 font-medium">

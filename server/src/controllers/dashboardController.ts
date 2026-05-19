@@ -2,10 +2,7 @@ import { Request, Response } from "express";
 import Course from "../models/Course";
 import User from "../models/User";
 
-export const getDashboardStats = async (
-    req: Request,
-    res: Response
-) => {
+export const getDashboardStats = async (req: Request, res: Response) => {
     const totalCourses = await Course.countDocuments();
 
     const totalLearners = await User.countDocuments({

@@ -32,7 +32,11 @@ export const protect = async (
     }
 };
 
-export const adminOnly = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const adminOnly = (
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+) => {
     if (req.user?.role === "admin") {
         next();
     } else {
