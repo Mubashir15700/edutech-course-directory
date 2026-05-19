@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
     useGetCoursesQuery,
@@ -5,16 +6,29 @@ import {
 } from "../../features/courses/coursesApi";
 import type { Course } from "../../features/courses/types";
 import Table, { type Column } from "../../components/admin/Table";
+import Pagination from "../../components/Pagination";
+import Filters from "../../components/Filters";
 
 export default function CoursesPage() {
+    const [search, setSearch] = useState('');
+    const [category, setCategory] = useState('');
+    const [sort, setSort] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+
     const [deleteCourse, { isLoading: isDeleting }] =
         useDeleteCourseMutation();
 
     const { data, isLoading, error } = useGetCoursesQuery({
-        page: 1,
-        limit: 50,
-        search: "",
-        category: "",
+        page: currentPage,
+        limit: 10,
+        search,
+        category,
+    });
+
+    const sortedCourses = [...(data?.data || [])].sort((a, b) => {
+        if (sort === 'rating') return b.rating - a.rating;
+        if (sort === 'name') return a.name.localeCompare(b.name);
+        return 0;
     });
 
     const handleDelete = async (id: string) => {
@@ -69,11 +83,20 @@ export default function CoursesPage() {
                 </Link>
             </div>
 
+            <Filters
+                search={search}
+                category={category}
+                setCategory={setCategory}
+                setSearch={setSearch}
+                setSort={setSort}
+                sort={sort}
+            />
+
             {/* Table */}
             <div className="bg-white rounded-xl shadow overflow-hidden">
                 <Table
                     columns={columns}
-                    data={data?.data || []}
+                    data={sortedCourses}
                     renderActions={(course) => (
                         <div className="flex justify-end gap-3">
                             <Link to={`/admin/edit/${course._id}`} className="text-blue-600">
@@ -88,14 +111,15 @@ export default function CoursesPage() {
                         </div>
                     )}
                 />
-
-                {/* Empty state */}
-                {data?.data.length === 0 && (
-                    <div className="p-6 text-center text-gray-500">
-                        No courses available
-                    </div>
-                )}
             </div>
+
+            {/* Pagination */}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={data?.totalPages || 1}
+                setCurrentPage={setCurrentPage}
+                marginTop="mt-6"
+            />
         </div>
     );
 }

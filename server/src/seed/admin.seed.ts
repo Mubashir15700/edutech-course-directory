@@ -6,14 +6,14 @@ import User from "../models/User";
 dotenv.config();
 
 const seedAdmin = async () => {
-    const existingAdmin = await User.findOne({ email: "admin@example.com" });
+    const existingAdmin = await User.findOne({ email: process.env.ADMIN_EMAIL });
 
     if (!existingAdmin) {
-        const hashedPassword = await bcrypt.hash("12345@Qw", 10);
+        const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD as string, 10);
 
         await User.create({
             name: "Admin",
-            email: "admin@example.com",
+            email: process.env.ADMIN_EMAIL,
             password: hashedPassword,
             role: "admin",
         });

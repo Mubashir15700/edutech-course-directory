@@ -1,12 +1,23 @@
+import { useState } from "react";
 import {
     useGetLearnersQuery,
     useDeleteUserMutation,
 } from "../../features/users/usersApi";
 import type { User } from "../../features/users/types";
 import Table, { type Column } from "../../components/admin/Table";
+import Pagination from "../../components/Pagination";
+import Filters from "../../components/Filters";
 
 export default function LearnersPage() {
-    const { data, isLoading, error } = useGetLearnersQuery();
+    const [search, setSearch] = useState('');
+    const [sort, setSort] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const { data, isLoading, error } = useGetLearnersQuery({
+        page: currentPage,
+        limit: 10,
+        search,
+    });
     const [deleteUser, { isLoading: isDeleting }] =
         useDeleteUserMutation();
 
@@ -19,6 +30,21 @@ export default function LearnersPage() {
             console.error("Delete failed", err);
         }
     };
+
+    const sortedLearners = [...(data?.data || [])].sort((a, b) => {
+        if (sort === "joined") {
+            return (
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            );
+        }
+
+        if (sort === "name") {
+            return a.name.localeCompare(b.name);
+        }
+
+        return 0;
+    });
 
     if (isLoading) {
         return (
@@ -52,11 +78,24 @@ export default function LearnersPage() {
             {/* Header */}
             <h1 className="text-2xl font-bold mb-6">Learners</h1>
 
+            <Filters
+                search={search}
+                setSearch={setSearch}
+                searchPlaceholder="🔍 Search learners..."
+                setSort={setSort}
+                sort={sort}
+                sortOptions={[
+                    { value: "", label: "Sort By" },
+                    { value: "name", label: "Name" },
+                    { value: "joined", label: "Joined Date" },
+                ]}
+            />
+
             {/* Table */}
             <div className="bg-white rounded-xl shadow overflow-hidden">
                 <Table
                     columns={columns}
-                    data={data?.data || []}
+                    data={sortedLearners}
                     renderActions={(user) => (
                         <button
                             onClick={() => handleDelete(user._id)}
@@ -66,14 +105,15 @@ export default function LearnersPage() {
                         </button>
                     )}
                 />
-
-                {/* Empty state */}
-                {data?.data.length === 0 && (
-                    <div className="p-6 text-center text-gray-500">
-                        No learners found
-                    </div>
-                )}
             </div>
+
+            {/* Pagination */}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={data?.totalPages || 1}
+                setCurrentPage={setCurrentPage}
+                marginTop="mt-6"
+            />
         </div>
     );
 }

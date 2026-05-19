@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import type { UsersResponse } from "./types";
 
 export const usersApi = createApi({
     reducerPath: "usersApi",
@@ -11,8 +12,8 @@ export const usersApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        getLearners: builder.query<any, void>({
-            query: () => "/users?role=learner",
+        getLearners: builder.query<UsersResponse, { page: number; limit: number; search: string }>({
+            query: ({ page, limit, search }) => `/users?role=learner&page=${page}&limit=${limit}&search=${search}`,
         }),
 
         deleteUser: builder.mutation({

@@ -27,7 +27,12 @@ export default function EditCourse() {
         }
     };
 
-    if (isLoading || !course) return <p>Loading...</p>;
+    if (isLoading || !course)
+        return (
+            <div className="min-h-screen flex justify-center items-center">
+                <p className="text-lg font-semibold">Loading course...</p>
+            </div>
+        );
 
     return (
         <CourseForm

@@ -4,11 +4,12 @@ interface PaginationProps {
     currentPage: number
     totalPages: number
     setCurrentPage: (page: number | ((prev: number) => number)) => void
+    marginTop?: string
 }
 
-const Pagination = ({ currentPage, totalPages, setCurrentPage }: PaginationProps) => {
+const Pagination = ({ currentPage, totalPages, setCurrentPage, marginTop }: PaginationProps) => {
     return (
-        <div className="flex justify-center items-center gap-2 mt-10 flex-wrap">
+        <div className={`flex justify-center items-center gap-2 ${marginTop || 'mt-10'} flex-wrap`}>
             <button
                 onClick={() => setCurrentPage((prev) => prev - 1)}
                 disabled={currentPage === 1 || totalPages === 0}
