@@ -6,12 +6,14 @@ import Register from "../pages/Register";
 import Courses from "../pages/Courses";
 import CourseDetails from "../pages/CourseDetails";
 
+import Profile from "../pages/Profile";
+import CoursePlayer from "../pages/CoursePlayer";
+
 import Dashboard from "../pages/admin/Dashboard";
 import AddCourse from "../pages/admin/AddCourse";
 import EditCourse from "../pages/admin/EditCourse";
 import CoursesPage from "../pages/admin/CoursesPage";
 import LearnersPage from "../pages/admin/LearnersPage";
-import Profile from "../pages/Profile";
 import AdminProfile from "../pages/admin/Profile";
 
 import NotFound from "../pages/NotFound";
@@ -52,6 +54,11 @@ export default function AppRoutes() {
             />
 
             {/* Learner */}
+            <Route path="/courses/:id/lecture" element={
+                <ProtectedRoute>
+                    <CoursePlayer />
+                </ProtectedRoute>
+            } />
             <Route path="/profile" element={
                 <ProtectedRoute>
                     <Profile />

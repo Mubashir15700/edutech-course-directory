@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useGetCourseByIdQuery } from "../features/courses/coursesApi";
 import CourseLoading from "../components/CourseLoading";
 import CourseNotFound from "../components/CourseNotFound";
+import EnrollButton from "../components/EnrollButton";
 
 export default function CourseDetails() {
     const { id } = useParams<{ id: string }>();
@@ -124,10 +125,11 @@ export default function CourseDetails() {
                                     <li className="flex items-center gap-2">📜 <span>Certificate of completion included</span></li>
                                 </ul>
 
-                                {/* Enrollment CTA with direct routing to mock checkout flow or auth login prompt */}
-                                <button className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow transition duration-200 text-center block">
-                                    {course.data.price === 0 ? "Enroll for Free Now" : "Buy This Course"}
-                                </button>
+                                {/* Enrollment Button Component */}
+                                <div className="mb-4">
+                                    {/* @ts-ignore */}
+                                    <EnrollButton courseId={course.data._id} isPriceFree={course.data.price === 0} />
+                                </div>
 
                                 <p className="text-center text-xs text-gray-400 mt-4">
                                     30-Day Money-Back Guarantee

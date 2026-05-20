@@ -51,14 +51,19 @@ export const createCourse = async (req: Request, res: Response) => {
 };
 
 export const updateCourse = async (req: Request, res: Response) => {
-    const updated = await Course.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-    });
+    const course = await Course.findById(req.params.id);
 
-    if (!updated) {
+    if (!course) {
         res.status(404);
         throw new Error("Course not found");
     }
+
+    // Using .set() forces Mongoose to merge arrays cleanly while retaining 
+    // sub-document IDs for items that match, or creating them for items that are new.
+    course.set(req.body);
+
+    // 3. Save the document — this triggers pre-save hooks and nested validations!
+    const updated = await course.save();
 
     res.json(updated);
 };

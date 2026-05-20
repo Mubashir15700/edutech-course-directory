@@ -15,12 +15,25 @@ export interface UsersResponse {
     totalPages: number;
 }
 
+interface CoursesWithProgress {
+    _id: string;
+    name: string;
+    instructor: string;
+    thumbnail: string;
+    category: string;
+    progress: number;
+    totalLessons: number;
+    completedLessonsCount: number;
+    lessons: any[];
+    completedLessons: string[];
+}
+
 export interface IUser {
     _id: string;
     name: string;
     email: string;
     role: "admin" | "learner";
     isActive: boolean;
-    enrolledCourses?: Course[];
+    enrolledCourses?: CoursesWithProgress[];
     createdAt: string;
 }

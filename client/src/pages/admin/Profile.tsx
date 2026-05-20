@@ -31,7 +31,7 @@ export default function AdminProfile() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-    const handlePasswordUpdate = async (e: React.FormEvent) => {
+    const handlePasswordUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setMessage(null);
 

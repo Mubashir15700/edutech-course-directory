@@ -33,6 +33,25 @@ export const usersApi = createApi({
                 url: "/users/profile",
                 method: "GET",
             }),
+            providesTags: [{ type: "UserProfile" }],
+        }),
+
+        updateProfile: builder.mutation<void, { name: string }>({
+            query: ({ name }) => ({
+                url: "/users/profile",
+                method: "PUT",
+                body: { name },
+            }),
+            invalidatesTags: [{ type: "UserProfile" }],
+        }),
+
+        enrollFreeCourse: builder.mutation<{ message: string; courseId: string }, { courseId: string }>({
+            query: ({ courseId }) => ({
+                url: "/users/enroll-free",
+                method: "POST",
+                body: { courseId },
+            }),
+            invalidatesTags: ["UserProfile"],
         }),
 
         completeLesson: builder.mutation<void, { courseId: string; lessonId: string }>({
@@ -48,4 +67,4 @@ export const usersApi = createApi({
     }),
 });
 
-export const { useGetLearnersQuery, useDeleteUserMutation, useGetProfileQuery, useCompleteLessonMutation } = usersApi;
+export const { useGetLearnersQuery, useDeleteUserMutation, useGetProfileQuery, useUpdateProfileMutation, useEnrollFreeCourseMutation, useCompleteLessonMutation } = usersApi;
