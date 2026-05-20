@@ -10,9 +10,14 @@ export interface Course {
     rating: number;
 }
 
+interface Lesson {
+    title: string;
+    duration: string;
+    isFreePreview: boolean;
+}
 export interface CourseDetail extends Course {
     description: string;
-    lessons: { title: string, duration: "12 mins", isFreePreview: true }[];
+    lessons: Lesson[];
     tags: string[];
 }
 

@@ -3,6 +3,7 @@ import { createCourseSchema } from "../../validations/courseValidation";
 import { useGetCourseByIdQuery } from "../../features/courses/coursesApi";
 import CourseLoading from "../CourseLoading";
 import CourseNotFound from "../CourseNotFound";
+import type { Course } from "../../features/courses/types";
 
 interface LessonInput {
     title: string;
@@ -27,7 +28,7 @@ interface CourseFormState {
 }
 
 type Props = {
-    initialData?: Partial<CourseFormState>;
+    initialData?: Partial<CourseFormState> | Course;
     onSubmit: (data: CourseFormState) => void;
     isLoading?: boolean;
     title: string;
@@ -76,16 +77,16 @@ export default function CourseForm({
         if (sourceData) {
             setForm({
                 name: sourceData.name || "",
-                description: sourceData.description || "",
+                description: (sourceData as CourseFormState).description || "",
                 instructor: sourceData.instructor || "",
                 duration: sourceData.duration || "",
                 category: sourceData.category || "",
                 price: sourceData.price ?? 0,
                 level: sourceData.level as "Beginner" | "Intermediate" | "Advanced" || "Beginner",
                 thumbnail: sourceData.thumbnail || "",
-                tags: sourceData.tags || [],
+                tags: (sourceData as CourseFormState).tags || [],
                 rating: sourceData.rating ?? 0,
-                lessons: sourceData.lessons || [],
+                lessons: (sourceData as CourseFormState).lessons || [],
             });
         }
     }, [course, initialData]);

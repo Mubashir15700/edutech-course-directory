@@ -1,5 +1,3 @@
-import type { Course } from "../courses/types";
-
 export interface User {
     _id: string;
     name: string;
