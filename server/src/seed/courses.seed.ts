@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 import Course from "../models/Course";
+
+dotenv.config();
 
 const initialCourses = [
     {
@@ -153,7 +156,7 @@ const initialCourses = [
 const seedDatabase = async () => {
     try {
         console.log("Connecting to MongoDB...");
-        await mongoose.connect('mongodb+srv://mubashir15700:aNAnKak4PM1Q4pV2@cluster0.aqtan.mongodb.net/edutech?retryWrites=true&w=majority');
+        await mongoose.connect(process.env.MONGO_URI as string);
         console.log("🚀 Connected successfully!");
 
         // 2. Wipe old data
