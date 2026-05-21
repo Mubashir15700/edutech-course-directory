@@ -63,7 +63,7 @@ export const createCheckoutSession = async (req: AuthRequest, res: Response) => 
                 quantity: 1,
             },
         ],
-        success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}&courseId=${courseId}`,
         cancel_url: `${process.env.CLIENT_URL}/courses/${courseId}`,
         metadata: {
             userId: userId.toString(),

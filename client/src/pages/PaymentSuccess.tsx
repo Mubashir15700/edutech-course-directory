@@ -7,6 +7,7 @@ export default function PaymentSuccess() {
     const navigate = useNavigate();
 
     const sessionId = searchParams.get("session_id");
+    const courseId = searchParams.get("courseId");
     const isFree = searchParams.get("mode") === "free";
 
     const [verifySession, { isLoading }] = useVerifyStripeSessionMutation();
@@ -111,7 +112,7 @@ export default function PaymentSuccess() {
 
                 <div className="flex flex-col gap-3">
                     <button
-                        onClick={() => navigate("/dashboard/my-courses")}
+                        onClick={() => navigate(`/courses/${courseId}/lecture`)}
                         className="w-full py-3.5 px-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg text-sm tracking-wide"
                     >
                         Go To My Classroom Dashboard →
