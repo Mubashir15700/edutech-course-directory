@@ -45,11 +45,20 @@ export const usersApi = createApi({
             invalidatesTags: [{ type: "UserProfile" }],
         }),
 
-        enrollFreeCourse: builder.mutation<{ message: string; courseId: string }, { courseId: string }>({
+        createCheckoutSession: builder.mutation<{ mode: "free" | "paid"; url?: string; message?: string }, { courseId: string }>({
             query: ({ courseId }) => ({
-                url: "/users/enroll-free",
+                url: "/enrollments/checkout",
                 method: "POST",
                 body: { courseId },
+            }),
+            invalidatesTags: ["UserProfile"],
+        }),
+
+        verifyStripeSession: builder.mutation<{ success: boolean; enrollment?: any }, { sessionId: string }>({
+            query: ({ sessionId }) => ({
+                url: "/enrollments/verify-session",
+                method: "POST",
+                body: { sessionId },
             }),
             invalidatesTags: ["UserProfile"],
         }),
@@ -67,4 +76,4 @@ export const usersApi = createApi({
     }),
 });
 
-export const { useGetLearnersQuery, useDeleteUserMutation, useGetProfileQuery, useUpdateProfileMutation, useEnrollFreeCourseMutation, useCompleteLessonMutation } = usersApi;
+export const { useGetLearnersQuery, useDeleteUserMutation, useGetProfileQuery, useUpdateProfileMutation, useCreateCheckoutSessionMutation, useVerifyStripeSessionMutation, useCompleteLessonMutation } = usersApi;

@@ -5,9 +5,9 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Courses from "../pages/Courses";
 import CourseDetails from "../pages/CourseDetails";
-
 import Profile from "../pages/Profile";
 import CoursePlayer from "../pages/CoursePlayer";
+import PaymentSuccess from "../pages/PaymentSuccess";
 
 import Dashboard from "../pages/admin/Dashboard";
 import AddCourse from "../pages/admin/AddCourse";
@@ -64,6 +64,7 @@ export default function AppRoutes() {
                     <Profile />
                 </ProtectedRoute>
             } />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
 
             {/* Admin */}
             <Route

@@ -6,16 +6,14 @@ import { logger } from "./utils/logger";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 let server: any;
 
 const startServer = async () => {
     try {
-        // Connect DB
         await connectDB();
 
-        // Start server
         server = app.listen(PORT, () => {
             logger.info(`Server running on port ${PORT}`);
         });
@@ -27,7 +25,6 @@ const startServer = async () => {
 
 startServer();
 
-// Graceful shutdown
 const gracefulShutdown = async (signal: string) => {
     logger.info(`${signal} received. Shutting down gracefully...`);
 
@@ -36,7 +33,6 @@ const gracefulShutdown = async (signal: string) => {
         server.close(async () => {
             logger.info("HTTP server closed");
 
-            // Close MongoDB connection
             await mongoose.connection.close();
 
             logger.info("MongoDB connection closed");
@@ -51,7 +47,6 @@ const gracefulShutdown = async (signal: string) => {
 
 // Handle termination signals
 process.on("SIGINT", () => gracefulShutdown("SIGINT"));
-
 process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 
 // Handle unhandled promise rejections

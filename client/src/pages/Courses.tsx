@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useGetCoursesQuery } from "../features/courses/coursesApi";
+import { useInView } from "react-intersection-observer";
+import { useGetInfiniteCoursesQuery } from "../features/courses/coursesApi";
 import CourseCard from "../components/CourseCard";
-import Pagination from "../components/Pagination";
 import Filters from "../components/Filters";
 
 function Courses() {
@@ -12,11 +12,8 @@ function Courses() {
 
     // Access query parameters for category filter (e.g., from landing page links)
     const urlParams = new URLSearchParams(window.location.search);
-    useEffect(() => {
-        setCategory(urlParams.get("category") || "");
-    }, []);
 
-    const { data, isLoading, error } = useGetCoursesQuery({
+    const { data, isLoading, isFetching, error } = useGetInfiniteCoursesQuery({
         page: currentPage,
         limit: 6,
         search,
@@ -28,6 +25,25 @@ function Courses() {
         if (sort === "name") return a.name.localeCompare(b.name);
         return 0;
     });
+
+    // Setup intersection target hook tracking
+    const { ref, inView } = useInView({
+        threshold: 0.1,      // fires when 10% of the target element is visible
+        rootMargin: "200px", // pre-fetch 200px before user hits absolute bottom
+    });
+
+    const hasMore = data ? currentPage < data.totalPages : false;
+
+    // Handle automated pagination page steps when scroll target steps into viewport
+    useEffect(() => {
+        if (inView && data && currentPage < data.totalPages && !isFetching) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    }, [inView, data, isFetching, currentPage]);
+
+    useEffect(() => {
+        setCategory(urlParams.get("category") || "");
+    }, []);
 
     // Reset page on filter change
     useEffect(() => {
@@ -78,13 +94,19 @@ function Courses() {
                 )}
             </div>
 
-            {/* Pagination */}
-            <Pagination
-                currentPage={currentPage}
-                totalPages={data?.totalPages || 1}
-                setCurrentPage={setCurrentPage}
-                marginTop="mt-5"
-            />
+            {/* Bottom Target Trigger & Feedback Indicator Area */}
+            <div ref={ref} className="w-full flex justify-center py-8 mt-4">
+                {isFetching && (
+                    <p className="text-sm text-gray-500 animate-pulse font-medium">
+                        Loading more courses...
+                    </p>
+                )}
+                {!hasMore && sortedCourses.length > 0 && (
+                    <p className="text-xs text-gray-400 font-normal">
+                        You've reached the end of the catalog.
+                    </p>
+                )}
+            </div>
         </div>
     );
 }

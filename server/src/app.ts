@@ -1,17 +1,23 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
-import dotenv from "dotenv";
+
 import courseRoutes from "./routes/courseRoutes";
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
+import enrollmentRoutes from "./routes/enrollmentRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
+
 import { notFoundMiddleware } from "./middleware/notFoundMiddleware";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import { limiter } from "./middleware/rateLimiter";
 
-dotenv.config();
+import { handleStripeWebhook } from "./controllers/enrollmentController";
+
 
 const app = express();
 
@@ -28,6 +34,13 @@ app.use(
 
 app.use(limiter);
 
+// MOUNT WEBHOOK FIRST BEFORE EXPRESS.JSON GLOBAL PARSERS
+app.post(
+    "/api/enrollments/webhook",
+    express.raw({ type: "application/json" }), // Captures untouched raw buffer strings
+    handleStripeWebhook
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -39,6 +52,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/enrollments", enrollmentRoutes);
 
 app.get("/", (req, res) => {
     res.status(200).json({

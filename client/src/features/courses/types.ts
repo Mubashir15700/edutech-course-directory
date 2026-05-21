@@ -28,6 +28,13 @@ export interface CoursesResponse {
     totalPages: number;
 }
 
+export interface GetCoursesArgs {
+    page?: number;
+    limit?: number;
+    search?: string;
+    category?: string;
+}
+
 export interface CourseDetailResponse {
     data: CourseDetail;
     createdAt: string;

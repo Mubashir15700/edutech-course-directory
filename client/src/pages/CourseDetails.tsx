@@ -7,6 +7,8 @@ import EnrollButton from "../components/EnrollButton";
 
 export default function CourseDetails() {
     const { id } = useParams<{ id: string }>();
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+
     const { data: course, isLoading, error } = useGetCourseByIdQuery(id || "");
 
     // UI State to toggle curriculum view visibility
@@ -126,10 +128,13 @@ export default function CourseDetails() {
                                 </ul>
 
                                 {/* Enrollment Button Component */}
-                                <div className="mb-4">
-                                    {/* @ts-ignore */}
-                                    <EnrollButton courseId={course.data._id} isPriceFree={course.data.price === 0} />
-                                </div>
+
+                                {user?.role !== "admin" && (
+                                    <div className="mb-4">
+                                        {/* @ts-ignore */}
+                                        <EnrollButton courseId={course.data._id} isPriceFree={course.data.price === 0} />
+                                    </div>
+                                )}
 
                                 <p className="text-center text-xs text-gray-400 mt-4">
                                     30-Day Money-Back Guarantee

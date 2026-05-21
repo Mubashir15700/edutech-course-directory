@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { CourseDetailResponse, CoursesResponse } from "./types";
+import type { CourseDetailResponse, CoursesResponse, GetCoursesArgs } from "./types";
 
 export const coursesApi = createApi({
     reducerPath: "coursesApi",
@@ -27,6 +27,37 @@ export const coursesApi = createApi({
                 url: "/courses",
                 params: { page, limit, search, category },
             }),
+        }),
+
+        getInfiniteCourses: builder.query<CoursesResponse, GetCoursesArgs>({
+            query: ({ page = 1, limit = 6, search = "", category = "" }) => ({
+                url: "/courses",
+                params: { page, limit, search, category },
+            }),
+            // Groups cache chunks securely by filters, skipping page indexing counters
+            serializeQueryArgs: ({ endpointName, queryArgs }) => {
+                const { search, category } = queryArgs;
+                return `${endpointName}-${category || ""}-${search || ""}`;
+            },
+            // Accumulates state blocks continuously
+            merge: (currentCache, newItems, { arg }) => {
+                if (arg.page === 1) {
+                    return newItems;
+                }
+                if (!currentCache.data) {
+                    currentCache.data = [];
+                }
+                const existingIds = new Set(currentCache.data.map((item) => item._id));
+                const uniqueNewItems = newItems.data.filter((item) => !existingIds.has(item._id));
+
+                currentCache.data.push(...uniqueNewItems);
+                currentCache.page = newItems.page;
+                currentCache.totalPages = newItems.totalPages;
+                currentCache.total = newItems.total;
+            },
+            forceRefetch({ currentArg, previousArg }) {
+                return currentArg !== previousArg;
+            },
         }),
 
         getCourseById: builder.query<CourseDetailResponse, string>({
@@ -60,6 +91,7 @@ export const coursesApi = createApi({
 
 export const {
     useGetCoursesQuery,
+    useGetInfiniteCoursesQuery,
     useCreateCourseMutation,
     useUpdateCourseMutation,
     useDeleteCourseMutation,

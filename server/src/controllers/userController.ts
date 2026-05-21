@@ -112,28 +112,6 @@ export const updateUserProfile = async (req: AuthRequest, res: Response) => {
     });
 };
 
-export const enrollInFreeCourse = async (req: any, res: any) => {
-    const { courseId } = req.body;
-    const userId = req.user._id;
-
-    const course = await Course.findById(courseId);
-    if (!course) {
-        return res.status(404).json({ message: "Course not found" });
-    }
-
-    if (course.price > 0) {
-        return res.status(400).json({ message: "This course is premium and requires checkout." });
-    }
-
-    await User.findByIdAndUpdate(userId, {
-        $addToSet: {
-            enrolledCourses: { courseId: courseId, completedLessons: [] }
-        }
-    });
-
-    res.status(200).json({ message: "Enrolled successfully!", courseId });
-};
-
 export const markLessonComplete = async (req: AuthRequest, res: Response) => {
     const { courseId, lessonId } = req.body;
 
