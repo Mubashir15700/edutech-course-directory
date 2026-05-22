@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { AuthRequest } from "../middleware/authMiddleware";
 import User from "../models/User";
-import Course from "../models/Course";
 
 export const getLearners = async (req: Request, res: Response) => {
     const { page = "1", limit = "6", search = "" } = req.query;

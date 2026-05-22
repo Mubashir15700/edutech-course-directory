@@ -1,7 +1,7 @@
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import { useGetDashboardStatsQuery } from "../../features/dashboard/dashboardApi";
-import Table, { type Column } from "../../components/admin/Table"; // Adjust this import path to match your file structure
-// Define the interface for a Sale record to ensure full type-safety
+import Table, { type Column } from "../../components/admin/Table";
+
 interface SaleRecord {
     _id: string;
     user: {
@@ -25,7 +25,6 @@ export default function Dashboard() {
     const recentSales: SaleRecord[] = data?.recentSales || [];
     const chartData = data?.chartData || [];
 
-    // Define columns config using your custom Table configuration rules
     const columns: Column<SaleRecord>[] = [
         {
             header: "Customer Details",

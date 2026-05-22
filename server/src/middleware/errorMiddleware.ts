@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { logger } from "../utils/logger";
 
 export const errorMiddleware = (
     err: any,
@@ -6,7 +7,7 @@ export const errorMiddleware = (
     res: Response,
     next: NextFunction
 ) => {
-    console.error(err);
+    logger.error(err);
 
     res.status(err.status || 500).json({
         success: false,

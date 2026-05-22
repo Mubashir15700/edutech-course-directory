@@ -7,13 +7,13 @@ import {
     toggleCourseArchiveStatus,
 } from "../controllers/courseController";
 import { adminOnly, protect } from "../middleware/authMiddleware";
-import { asyncHandler } from "../utils/asyncHandler";
 import { validate } from "../middleware/validate";
+import { trackUserActivity } from "../middleware/activityMiddleware";
 import {
     createCourseSchema,
     updateCourseSchema,
 } from "../validations/courseValidation";
-import { trackUserActivity } from "../middleware/activityMiddleware";
+import { asyncHandler } from "../utils/asyncHandler";
 
 const router = express.Router();
 

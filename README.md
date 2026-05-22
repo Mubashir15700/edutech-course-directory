@@ -1,87 +1,68 @@
 # 📚 EduTech Course Directory
 
-A full-stack EduTech platform built using the MERN stack that allows learners to explore courses and admins to manage the platform through a modern dashboard.
+A robust, full-stack educational ecosystem built using the MERN stack and TypeScript. This platform empowers learners to discover courses, securely purchase and enroll in programs, and share course reviews, while providing administrators with an analytical management dashboard to handle platform growth.A robust, full-stack educational ecosystem built using the MERN stack and TypeScript. This platform empowers learners to discover courses, securely purchase and enroll in programs, and share course reviews, while providing administrators with an analytical management dashboard to handle platform growth.
 
 ---
 
 ## 🚀 Live Demo
 
-### Frontend
+### 🖥️ Frontend Client
 https://edutech-course-directory-three.vercel.app/
 
-### Backend API
+### ⚙️ Backend API
 https://edutech-course-directory-api.onrender.com
 
 ---
 
-# ✨ Features
+## ✨ Features
 
-## 👨‍🎓 Learner Features
-- 🔐 Authentication & authorization
-- 📚 Browse available courses
-- 🔍 Search courses by name
-- 🏷️ Filter courses by category
-- ↕️ Sort courses by name and latest
-- 📄 Pagination support
-- 👤 Profile dropdown with logout
-- 🔔 Notification UI
+### 👨‍🎓 Learner Features
+- **Secure Authentication:** Identity protection powered by JWT and structured local persistence.
+- **Advanced Course Discovery:** Real-time search by keywords, category filtering, structural pagination, and sorting by name or creation date.
+- **💳 Seamless Course Payments & Enrollment:** Fully integrated checkout architecture allowing instant course purchasing, billing confirmation, and immediate student enrollment tracking.
+- **Interactive Review Ecosystem:** Pinned user reviews with full inline **CRUD lifecycle** (Create, Read, Update, Delete) without page reloads.
+- **Dynamic Metrics Breakdown:** Live calculations showing percentage star breakdowns and helpfulness upvote counters (`likes`).
+- **Student Space:** Profile tracking dropdowns, notifications UI shell, and clear registration access points.
 
----
+### 🛠️ Admin Features
+- **Analytics KPI Center:** Dynamic dashboards tracking operational statistics like revenue metrics, active user ratios, and course generation metrics.
+- **Course Catalog Management (CRUD):** Complete programmatic creation, updates, and archival controls over course resources.
+- **User Auditing:** Dedicated directory tables listing learners with administrative protection middleware routes.
+- **Flexible UI Architecture:** Clean, decoupled data-table models built for reusability.
 
-## 🛠️ Admin Features
-- 📊 Dashboard analytics
-- 📚 Manage courses (CRUD)
-- 👥 View learners
-- 📈 Display total courses, learners, and active users
-- 🧩 Reusable table component
-- 🔒 Protected admin routes
-
----
-
-# 🧠 Backend Features
-- ✅ REST API with Express & TypeScript
-- ✅ MongoDB Atlas integration
-- ✅ JWT authentication
-- ✅ Role-based authorization
-- ✅ Zod validation middleware
-- ✅ Centralized error handling
-- ✅ Async handler utility
-- ✅ Helmet security middleware
-- ✅ CORS configuration
-- ✅ Morgan logger
-- ✅ Rate limiting setup
-- ✅ Scalable folder architecture
+### 🧠 Backend Core & Security
+- **Type-Safe Architecture:** Native TypeScript end-to-end integration across routes, schemas, and queries.
+- **Strict Validation Layer:** Input parsing runtime protection enforced with schema-driven Zod middleware.
+- **Defensive Production Guardrails:** Shielded infrastructure incorporating Helmet headers, rate-limiting, custom CORS rules, and database connection state sanitization.
+- **Clean execution flow:** Decoupled layout utilizing centralized global error handling hooks and declarative Mongoose query pipelines (`.lean()`).
 
 ---
 
-# 🛠️ Tech Stack
+## 🛠️ Tech Stack
 
-## Frontend
-- React (Vite)
-- TypeScript
-- Redux Toolkit
-- RTK Query
-- React Router DOM
-- Tailwind CSS
-
----
-
-## Backend
-- Node.js
-- Express.js
-- TypeScript
-- MongoDB Atlas
-- Mongoose
-- JWT Authentication
-- Zod Validation
+| Domain | Technologies Used |
+| :--- | :--- |
+| **Frontend** | React (Vite), TypeScript, Redux Toolkit, RTK Query, React Router DOM, Tailwind CSS |
+| **Backend** | Node.js, Express.js, TypeScript, REST API Architecture, Zod Validation |
+| **Database** | MongoDB Atlas, Mongoose ODM |
+| **Tooling** | Git, dotenv, ts-node, Morgan Logging |
 
 ---
 
 ## 📂 Project Structure
 ```txt
 edutech-course-directory/
-├── client/        # Frontend application
-├── server/        # Backend API
+├── client/                 # Frontend React Application
+│   src/
+│   ├── components/         # Reusable UI Components
+│   ├── pages/              # Course Details, Dashboards, Discovery views
+│   └── features/           # RTK Query API Slices (courseApi, etc.)
+├── server/                 # Backend Express API
+│   src/
+│   ├── controllers/        # Request Handlers (Course, Review, Auth)
+│   ├── middleware/         # Auth guards, Zod validators, Errors handlers
+│   ├── models/             # Database Schemas (User, Course, Review)
+│   └── seed/               # Autonomous DB Population Scripts
 └── README.md
 ```
 
@@ -175,12 +156,9 @@ npm run dev
 
 # 📸 Future Improvements
 
-- 💳 Course payments integration
 - 📧 Email notifications
 - 📈 Advanced analytics dashboard
 - 🎥 Video course support
-- ⭐ Course enrollment system
-- 🛒 Checkout flow
 - 📱 Fully responsive admin dashboard
 
 ---

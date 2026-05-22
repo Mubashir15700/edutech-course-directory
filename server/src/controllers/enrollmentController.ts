@@ -4,6 +4,7 @@ import Course from "../models/Course";
 import Enrollment from "../models/Enrollment";
 import User from "../models/User";
 import { AuthRequest } from "../middleware/authMiddleware";
+import { logger } from "../utils/logger";
 
 const stripeSecret = process.env.STRIPE_SECRET_KEY;
 if (!stripeSecret) {
@@ -87,7 +88,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
             process.env.STRIPE_WEBHOOK_SECRET!
         );
     } catch (err: any) {
-        console.error(`Webhook Error Verification Failure: ${err.message}`);
+        logger.error(`Webhook Error Verification Failure: ${err.message}`);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
@@ -115,7 +116,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
                 },
                 { upsert: true, new: true }
             );
-            console.log(`Success access granted: User ${userId} unlocked course ${courseId}`);
+            logger.info(`Success access granted: User ${userId} unlocked course ${courseId}`);
         }
     }
 
@@ -129,7 +130,6 @@ export const verifySession = async (req: Request, res: Response) => {
         return res.status(400).json({ success: false, message: "Missing session ID" });
     }
 
-    // Look for a matching completed transaction record
     const enrollment = await Enrollment.findOne({ paymentId: sessionId, status: "completed" });
 
     if (!enrollment) {

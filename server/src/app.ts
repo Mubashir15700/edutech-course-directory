@@ -19,7 +19,6 @@ import { limiter } from "./middleware/rateLimiter";
 
 import { handleStripeWebhook } from "./controllers/enrollmentController";
 
-
 const app = express();
 
 app.set("trust proxy", 1);

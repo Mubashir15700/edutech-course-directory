@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+
 import { coursesApi } from "../features/courses/coursesApi";
 import { usersApi } from "../features/users/usersApi";
 import { dashboardApi } from "../features/dashboard/dashboardApi";

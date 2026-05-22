@@ -27,10 +27,10 @@ export default function Login() {
             });
 
             setErrors(fieldErrors);
-            return; // stop API call
+            return;
         }
 
-        setErrors({}); // clear previous errors
+        setErrors({});
 
         try {
             const user = await login(form).unwrap();

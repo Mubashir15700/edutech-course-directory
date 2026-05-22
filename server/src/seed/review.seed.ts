@@ -8,20 +8,19 @@ import Course from "../models/Course";
 
 const seedReviews = async () => {
     try {
-        // 1. Establish database socket connection
-        console.log("⏳ Connecting to MongoDB Atlas...");
+        console.log("Connecting to MongoDB Atlas...");
         await mongoose.connect(process.env.MONGO_URI || "");
-        console.log("✅ Database linked successfully.");
+        console.log("Database linked successfully.");
 
-        // 2. Clear out any existing reviews to prevent duplicates
+        // Clear out any existing reviews to prevent duplicates
         await Review.deleteMany({});
-        console.log("🧹 Cleared old reviews entries from collection.");
+        console.log("Cleared old reviews entries from collection.");
 
-        // 3. Define your actual Mongo User Document IDs
+        // Define your actual Mongo User Document IDs
         const nikoId = new mongoose.Types.ObjectId("6a0c7d61a534c4a205ce97d1");
         const romanId = new mongoose.Types.ObjectId("6a0c7d70a534c4a205ce97d2");
 
-        // 4. Verify your course containers exist in the target database
+        // Verify your course containers exist in the target database
         const masterclass = await Course.findById("6a0d2bf4cf91429e7a1d2056");
         const uiuxSystem = await Course.findById("6a0d2bf4cf91429e7a1d205a");
         const pythonIntro = await Course.findById("6a0d2bf4cf91429e7a1d205d");
@@ -64,16 +63,16 @@ const seedReviews = async () => {
             });
         }
 
-        // 5. Execute bulk injection payload
+        // Execute bulk injection payload
         if (batchReviews.length > 0) {
             await Review.insertMany(batchReviews);
-            console.log(`🚀 Successfully injected ${batchReviews.length} structured reviews!`);
+            console.log(`Successfully injected ${batchReviews.length} structured reviews!`);
         } else {
-            console.log("⚠️ No matching courses found. Check your course ObjectIDs.");
+            console.log("No matching courses found. Check your course ObjectIDs.");
         }
 
-        // 6. Automatically recalculate and sync Course cached averages
-        console.log("🔄 Recalculating course average metrics...");
+        // Automatically recalculate and sync Course cached averages
+        console.log("Recalculating course average metrics...");
         const coursesToUpdate = [masterclass, uiuxSystem, pythonIntro].filter(Boolean);
 
         for (const course of coursesToUpdate) {
@@ -96,11 +95,11 @@ const seedReviews = async () => {
                 });
             }
         }
-        console.log("✅ Course averages synchronized.");
+        console.log("Course averages synchronized.");
 
         process.exit(0);
     } catch (error) {
-        console.error("❌ Seeding runtime failure:", error);
+        console.error("Seeding runtime failure:", error);
         process.exit(1);
     }
 };

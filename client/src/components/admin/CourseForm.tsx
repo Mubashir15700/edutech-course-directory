@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { createCourseSchema } from "../../validations/courseValidation";
 import { useGetCourseByIdQuery } from "../../features/courses/coursesApi";
+import type { Course } from "../../features/courses/types";
 import CourseLoading from "../CourseLoading";
 import CourseNotFound from "../CourseNotFound";
-import type { Course } from "../../features/courses/types";
 
 interface LessonInput {
     title: string;
@@ -55,7 +55,7 @@ export default function CourseForm({
     });
 
     // If 'id' is empty or missing, RTK Query will skip the network request entirely
-    const { data: course, isLoading: isCourseLoading, error } = useGetCourseByIdQuery(initialData?._id || "", {
+    const { data: course, isLoading: isCourseLoading, error } = useGetCourseByIdQuery({ id: initialData?._id || "" }, {
         skip: !initialData?._id,
     });
 

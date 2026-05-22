@@ -157,23 +157,23 @@ const seedDatabase = async () => {
     try {
         console.log("Connecting to MongoDB...");
         await mongoose.connect(process.env.MONGO_URI as string);
-        console.log("🚀 Connected successfully!");
+        console.log("Connected successfully!");
 
-        // 2. Wipe old data
+        // Wipe old data
         console.log("Wiping older course layouts...");
         await Course.deleteMany({});
 
-        // 3. Insert fresh data (Mongoose will now auto-generate the lesson IDs!)
+        // Insert fresh data (Mongoose will now auto-generate the lesson IDs!)
         console.log("Seeding fresh database models...");
         await Course.insertMany(initialCourses);
 
-        console.log("✨ SUCCESS: 9 courses seeded with unique, fixed lesson _ids!");
+        console.log("SUCCESS: 9 courses seeded with unique, fixed lesson _ids!");
 
-        // 4. Disconnect cleanly so the terminal process exits
+        // Disconnect cleanly so the terminal process exits
         await mongoose.disconnect();
         process.exit(0);
     } catch (error) {
-        console.error("❌ FAILED to seed database:", error);
+        console.error("FAILED to seed database:", error);
         process.exit(1);
     }
 };

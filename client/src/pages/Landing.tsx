@@ -18,7 +18,7 @@ export default function Landing() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
 
-            {/* 1. HERO SECTION */}
+            {/* HERO SECTION */}
             <div className="flex flex-col items-center justify-center px-4 pt-24 pb-16 text-center">
                 <div className="max-w-2xl">
                     <h3 className="text-2xl text-blue-600 font-semibold tracking-wide mb-3">
@@ -49,7 +49,7 @@ export default function Landing() {
                 </div>
             </div>
 
-            {/* 2. STATS SECTION (Pulled from Dashboard API data concepts) */}
+            {/* STATS SECTION (Pulled from Dashboard API data concepts) */}
             <div className="max-w-5xl mx-auto px-4 py-12 border-t border-b border-gray-100">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-center">
                     <div>
@@ -67,7 +67,7 @@ export default function Landing() {
                 </div>
             </div>
 
-            {/* 3. CATEGORIES QUICK LINKS */}
+            {/* CATEGORIES QUICK LINKS */}
             <div className="max-w-5xl mx-auto px-4 py-16">
                 <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
                     Browse Top Categories
@@ -85,7 +85,7 @@ export default function Landing() {
                 </div>
             </div>
 
-            {/* 4. FOOTER NOTE */}
+            {/* FOOTER NOTE */}
             <footer className="text-center py-8 text-sm text-gray-400 border-t border-gray-100">
                 <p>Join learners building the future with modern tech skills</p>
             </footer>
