@@ -32,17 +32,23 @@ export const getLearners = async (req: Request, res: Response) => {
     });
 };
 
-export const deleteUser = async (req: Request, res: Response) => {
-    const deleted = await User.findByIdAndDelete(req.params.id);
+export const toggleUserStatus = async (req: Request, res: Response) => {
+    const { id } = req.params;
 
-    if (!deleted) {
+    const user = await User.findById(id);
+    if (!user) {
         res.status(404);
         throw new Error("User not found");
     }
 
+    // Flip the boolean flag to its opposite state
+    user.isActive = !user.isActive;
+    await user.save();
+
     res.json({
         success: true,
-        message: "User deleted",
+        message: `User account has been successfully ${user.isActive ? 'activated' : 'deactivated'}.`,
+        isActive: user.isActive
     });
 };
 
@@ -76,7 +82,7 @@ export const getUserProfile = async (req: any, res: Response) => {
             totalLessons,
             completedLessonsCount: completedCount,
 
-            // 🚀 CRITICAL FIX: Pass down raw lessons & raw completion state array to front-end
+            // Pass down raw lessons & raw completion state array to front-end
             lessons: course.lessons,
             completedLessons: enrollment.completedLessons || []
         };

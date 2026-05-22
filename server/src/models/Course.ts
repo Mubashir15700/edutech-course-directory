@@ -17,8 +17,10 @@ export interface ICourse extends Document {
     level: "Beginner" | "Intermediate" | "Advanced";
     thumbnail?: string;
     tags: string[];
-    rating: number;
+    rating: number; // Average rating from reviews
+    numReviews: number; // Total number of reviews for accurate average rating calculation
     lessons: ILesson[];
+    isArchived: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -98,8 +100,14 @@ const courseSchema: Schema = new Schema(
             min: 0,
             max: 5
         },
+        numReviews: {
+            type: Number,
+            default: 0,
+            min: 0
+        },
         // Injected sub-schema array for course content
-        lessons: [lessonSchema]
+        lessons: [lessonSchema],
+        isArchived: { type: Boolean, default: false }
     },
     {
         timestamps: true

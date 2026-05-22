@@ -1,19 +1,29 @@
 import { Request, Response } from "express";
 import Course from "../models/Course";
+import Review from "../models/Review";
+import { AuthRequest } from "../middleware/authMiddleware";
 
 export const getCourses = async (req: Request, res: Response) => {
-    const { page = "1", limit = "6", search = "", category = "" } = req.query;
+    const { page = "1", limit = "6", search = "", category = "", isAdmin = "false" } = req.query;
+
+    const isAdminBool = isAdmin === "true";
+
+    // Define exactly what fields the Course Card grid component needs
+    let selectedFields = "name instructor duration category price level thumbnail rating numReviews";
 
     const query: any = {
+        isArchived: false,
         name: { $regex: search, $options: "i" },
     };
+
+    if (isAdminBool) {
+        delete query.isArchived;
+        selectedFields += " isArchived";
+    }
 
     if (category) {
         query.category = category;
     }
-
-    // Define exactly what fields the Course Card grid component needs
-    const selectedFields = "name instructor duration category price level thumbnail rating";
 
     const courses = await Course.find(query)
         .select(selectedFields)
@@ -31,16 +41,43 @@ export const getCourses = async (req: Request, res: Response) => {
     });
 };
 
-export const getCourseById = async (req: Request, res: Response) => {
-    const course = await Course.findById(req.params.id);
+export const getCourseById = async (req: AuthRequest, res: Response) => {
+    const courseId = req.params.id;
+    const userId = req.query.userId;
+
+    const fetchReviews = req.query.fetchReviews === "true";
+
+    const course = await Course.findById(courseId);
 
     if (!course) {
         res.status(404);
         throw new Error("Course not found");
     }
 
+    // Convert Mongoose document to a plain JavaScript object 
+    // so we can dynamically attach properties to it safely
+    const courseData = course.toObject() as any;
+
+    // CONDITIONAL LOOKUP: Fetch reviews only if the client is a learner
+    if (fetchReviews) {
+        const reviews = await Review.find({ course: courseId })
+            .populate("user", "name")
+            .sort({ createdAt: -1 })
+            .lean(); // Converts documents to plain JS objects immediately, shedding Mongoose internals
+
+        // Transform the clean array
+        courseData.reviews = reviews.map(review => ({
+            ...review,
+            likes: review.likes?.length || 0, // Sends a pure numerical count to your UI
+            hasLiked: review.likes?.some((id: any) => id.toString() === String(userId)) || false,
+        }));
+    } else {
+        courseData.reviews = [];
+    }
+
+    // Send the unified data object back
     res.json({
-        data: course,
+        data: courseData,
     });
 };
 
@@ -68,16 +105,22 @@ export const updateCourse = async (req: Request, res: Response) => {
     res.json(updated);
 };
 
-export const deleteCourse = async (req: Request, res: Response) => {
-    const deleted = await Course.findByIdAndDelete(req.params.id);
+export const toggleCourseArchiveStatus = async (req: Request, res: Response) => {
+    const { id } = req.params;
 
-    if (!deleted) {
+    const course = await Course.findById(id);
+    if (!course) {
         res.status(404);
         throw new Error("Course not found");
     }
 
+    // Flip the archive boolean flag
+    course.isArchived = !course.isArchived;
+    await course.save();
+
     res.json({
         success: true,
-        message: "Course deleted",
+        message: `Course has been successfully ${course.isArchived ? "archived" : "restored and made public"}.`,
+        isArchived: course.isArchived,
     });
 };

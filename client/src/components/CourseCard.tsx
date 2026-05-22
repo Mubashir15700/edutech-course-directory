@@ -55,7 +55,7 @@ const CourseCard = ({ course }: { course: Course }) => {
                     <div className="flex items-center gap-1">
                         <span className="text-yellow-500 text-sm">⭐</span>
                         <span className="text-sm font-bold text-gray-800">
-                            {course.rating ? course.rating.toFixed(1) : "0.0"}
+                            {course.rating ? course.rating.toFixed(1) : "0.0"} ({course.numReviews})
                         </span>
                     </div>
 

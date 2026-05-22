@@ -15,4 +15,9 @@ export type DashboardStats = {
         amountPaid: number;
         createdAt: string;
     }[];
+    chartData: {
+        date: string;
+        Revenue: number;
+        Enrollments: number;
+    }[];
 };

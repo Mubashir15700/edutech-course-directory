@@ -4,40 +4,59 @@ import Course from "../models/Course";
 import Enrollment from "../models/Enrollment";
 
 export const getDashboardStats = async (req: Request, res: Response) => {
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    try {
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    const activeUsersCount = await User.countDocuments({
-        lastActiveAt: { $gte: sevenDaysAgo },
-        role: "learner"
-    });
+        // 1. Fetch baseline metrics counters simultaneously
+        const [activeUsersCount, totalLearners, totalCourses, recentSales] = await Promise.all([
+            User.countDocuments({ lastActiveAt: { $gte: sevenDaysAgo }, role: "learner" }),
+            User.countDocuments({ role: "learner" }),
+            Course.countDocuments(),
+            Enrollment.find({ status: "completed" })
+                .populate("user", "name email")
+                .populate("course", "name")
+                .sort({ createdAt: -1 })
+                .limit(5)
+        ]);
 
-    const totalLearners = await User.countDocuments({ role: "learner" });
-    const totalCourses = await Course.countDocuments();
+        // 2. Aggregate Chart Data: Group completions by calendar day
+        const chartDataArray = await Enrollment.aggregate([
+            {
+                $match: {
+                    status: "completed",
+                    createdAt: { $gte: sevenDaysAgo }
+                }
+            },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%b %d", date: "$createdAt" } },
+                    revenue: { $sum: "$amountPaid" },
+                    enrollments: { $sum: 1 }
+                }
+            },
+            { $sort: { "_id": 1 } } // Chronological sort
+        ]);
 
-    const revenueStats = await Enrollment.aggregate([
-        { $match: { status: "completed" } },
-        {
-            $group: {
-                _id: null,
-                totalRevenue: { $sum: "$amountPaid" }
-            }
-        }
-    ]);
+        // Format chart structure for Recharts frontend ingestion
+        const formattedChartData = chartDataArray.map(item => ({
+            date: item._id,
+            Revenue: item.revenue,
+            Enrollments: item.enrollments
+        }));
 
-    const totalRevenue = revenueStats[0]?.totalRevenue || 0;
+        // Calculate cumulative earnings
+        const totalRevenue = chartDataArray.reduce((acc, item) => acc + item.revenue, 0);
 
-    // Recent Completed Purchases with sub-document data populated
-    const recentSales = await Enrollment.find({ status: "completed" })
-        .populate("user", "name email")
-        .populate("course", "name")
-        .sort({ createdAt: -1 })
-        .limit(5);
+        res.json({
+            totalCourses,
+            totalLearners,
+            activeUsers: activeUsersCount,
+            totalRevenue,
+            recentSales,
+            chartData: formattedChartData // Injected into your global dashboard response payload
+        });
 
-    res.json({
-        totalCourses,
-        totalLearners,
-        activeUsers: activeUsersCount,
-        totalRevenue,
-        recentSales
-    });
+    } catch (error: any) {
+        res.status(500).json({ message: "Analytics computation failure.", error: error.message });
+    }
 };

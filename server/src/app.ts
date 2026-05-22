@@ -11,6 +11,7 @@ import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
 import enrollmentRoutes from "./routes/enrollmentRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
+import reviewRoutes from "./routes/reviewRoutes";
 
 import { notFoundMiddleware } from "./middleware/notFoundMiddleware";
 import { errorMiddleware } from "./middleware/errorMiddleware";
@@ -53,6 +54,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 app.get("/", (req, res) => {
     res.status(200).json({

@@ -41,6 +41,12 @@ export const login = async (req: Request, res: Response) => {
     const user = await User.findOne({ email }).select("+password");
 
     if (user && (await bcrypt.compare(password, user.password))) {
+        if (!user.isActive) {
+            return res.status(403).json({
+                message: "Your account has been deactivated. Please contact an administrator for assistance."
+            });
+        }
+
         // Update activity timestamp on successful login
         user.lastActiveAt = new Date();
         await user.save();

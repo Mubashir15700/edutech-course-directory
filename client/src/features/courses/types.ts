@@ -8,6 +8,8 @@ export interface Course {
     level: string;
     thumbnail: string;
     rating: number;
+    numReviews: number;
+    isArchived: boolean;
 }
 
 interface Lesson {
@@ -15,10 +17,24 @@ interface Lesson {
     duration: string;
     isFreePreview: boolean;
 }
+
+export interface Review {
+    _id: string;
+    user: {
+        name: string;
+    };
+    rating: number;
+    comment: string;
+    likes: number;
+    hasLiked: boolean;
+    createdAt: string;
+}
+
 export interface CourseDetail extends Course {
     description: string;
     lessons: Lesson[];
     tags: string[];
+    reviews: Review[];
 }
 
 export interface CoursesResponse {

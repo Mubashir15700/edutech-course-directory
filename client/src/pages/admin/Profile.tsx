@@ -62,7 +62,7 @@ export default function AdminProfile() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="h-[80vh] max-h-[80vh] overflow-y-auto pr-2">
 
             {/* Header Title block */}
             <div className="mb-6">

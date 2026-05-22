@@ -4,7 +4,7 @@ import {
     getCourseById,
     createCourse,
     updateCourse,
-    deleteCourse,
+    toggleCourseArchiveStatus,
 } from "../controllers/courseController";
 import { adminOnly, protect } from "../middleware/authMiddleware";
 import { asyncHandler } from "../utils/asyncHandler";
@@ -35,6 +35,6 @@ router.put(
     validate(updateCourseSchema),
     asyncHandler(updateCourse)
 );
-router.delete("/:id", protect, adminOnly, asyncHandler(deleteCourse));
+router.patch("/:id", protect, adminOnly, asyncHandler(toggleCourseArchiveStatus));
 
 export default router;

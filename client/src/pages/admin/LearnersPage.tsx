@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
     useGetLearnersQuery,
-    useDeleteUserMutation,
+    useToggleUserStatusMutation,
 } from "../../features/users/usersApi";
 import type { User } from "../../features/users/types";
 import Table, { type Column } from "../../components/admin/Table";
@@ -18,15 +18,15 @@ export default function LearnersPage() {
         limit: 10,
         search,
     });
-    const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+    const [toggleUserStatus, { isLoading: isDeleting }] = useToggleUserStatusMutation();
 
     const handleDelete = async (id: string) => {
-        if (!window.confirm("Delete this learner?")) return;
+        if (!window.confirm("Toggle this learner's status?")) return;
 
         try {
-            await deleteUser(id).unwrap();
+            await toggleUserStatus(id).unwrap();
         } catch (err) {
-            console.error("Delete failed", err);
+            console.error("Toggle status failed", err);
         }
     };
 
@@ -99,7 +99,7 @@ export default function LearnersPage() {
                             onClick={() => handleDelete(user._id)}
                             className="text-red-600"
                         >
-                            {isDeleting ? "Deleting..." : "Delete"}
+                            {isDeleting ? "Toggling..." : user.isActive ? "Deactivate" : "Activate"}
                         </button>
                     )}
                 />

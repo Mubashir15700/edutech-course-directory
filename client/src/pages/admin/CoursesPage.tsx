@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
     useGetCoursesQuery,
-    useDeleteCourseMutation,
+    useToggleArchiveCourseMutation,
 } from "../../features/courses/coursesApi";
 import type { Course } from "../../features/courses/types";
 import Table, { type Column } from "../../components/admin/Table";
@@ -15,13 +15,14 @@ export default function CoursesPage() {
     const [sort, setSort] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [deleteCourse, { isLoading: isDeleting }] = useDeleteCourseMutation();
+    const [toggleArchiveCourse, { isLoading: isArchiving }] = useToggleArchiveCourseMutation();
 
     const { data, isLoading, error } = useGetCoursesQuery({
         page: currentPage,
         limit: 10,
         search,
         category,
+        isAdmin: true,
     });
 
     const sortedCourses = [...(data?.data || [])].sort((a, b) => {
@@ -30,14 +31,11 @@ export default function CoursesPage() {
         return 0;
     });
 
-    const handleDelete = async (id: string) => {
-        if (!window.confirm("Are you sure you want to delete this course?"))
-            return;
-
+    const handleToggleArchive = async (id: string) => {
         try {
-            await deleteCourse(id).unwrap();
+            await toggleArchiveCourse(id).unwrap();
         } catch (err) {
-            console.error("Delete failed", err);
+            console.error("Toggle archive failed", err);
         }
     };
 
@@ -106,10 +104,10 @@ export default function CoursesPage() {
                                 Edit
                             </Link>
                             <button
-                                onClick={() => handleDelete(course._id)}
+                                onClick={() => handleToggleArchive(course._id)}
                                 className="text-red-600"
                             >
-                                {isDeleting ? "Deleting..." : "Delete"}
+                                {isArchiving ? "Toggling..." : course.isArchived ? "Unarchive" : "Archive"}
                             </button>
                         </div>
                     )}

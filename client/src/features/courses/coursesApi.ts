@@ -13,6 +13,7 @@ export const coursesApi = createApi({
             return headers;
         },
     }),
+    tagTypes: ["Course"],
     endpoints: (builder) => ({
         getCourses: builder.query<
             CoursesResponse,
@@ -21,12 +22,14 @@ export const coursesApi = createApi({
                 limit?: number;
                 search?: string;
                 category?: string;
+                isAdmin?: boolean;
             }
         >({
-            query: ({ page = 1, limit = 6, search = "", category = "" }) => ({
+            query: ({ page = 1, limit = 6, search = "", category = "", isAdmin = true }) => ({
                 url: "/courses",
-                params: { page, limit, search, category },
+                params: { page, limit, search, category, isAdmin },
             }),
+            providesTags: [{ type: "Course" }],
         }),
 
         getInfiniteCourses: builder.query<CoursesResponse, GetCoursesArgs>({
@@ -60,8 +63,50 @@ export const coursesApi = createApi({
             },
         }),
 
-        getCourseById: builder.query<CourseDetailResponse, string>({
-            query: (id) => `/courses/${id}`,
+        getCourseById: builder.query<CourseDetailResponse, { id: string; userId?: string; fetchReviews?: boolean }>({
+            query: ({ id, userId, fetchReviews }) => ({
+                url: `/courses/${id}`,
+                method: "GET",
+                params: {
+                    userId,
+                    fetchReviews: fetchReviews ? "true" : "false"
+                },
+            }),
+            providesTags: (_result, _error, arg) => [{ type: "Course", id: arg.id }],
+        }),
+
+        toggleLikeReview: builder.mutation({
+            query: (reviewId) => ({
+                url: `/reviews/toggle-like/${reviewId}`,
+                method: "POST",
+            }),
+            invalidatesTags: (_result, _error, arg) => [{ type: "Course", id: arg.courseId }],
+        }),
+
+        addReview: builder.mutation<any, { courseId: string; rating: number; comment: string }>({
+            query: ({ courseId, ...body }) => ({
+                url: `/reviews/${courseId}`,
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: (_result, _error, arg) => [{ type: 'Course', id: arg.courseId }],
+        }),
+
+        updateReview: builder.mutation<any, { reviewId: string; rating: number; comment: string; courseId: string }>({
+            query: ({ reviewId, courseId, ...body }) => ({
+                url: `/reviews/${reviewId}`,
+                method: "PUT",
+                body,
+            }),
+            invalidatesTags: (_result, _error, arg) => [{ type: 'Course', id: arg.courseId }],
+        }),
+
+        deleteReview: builder.mutation<any, { reviewId: string; courseId: string }>({
+            query: ({ reviewId }) => ({
+                url: `/reviews/${reviewId}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: (_result, _error, arg) => [{ type: 'Course', id: arg.courseId }],
         }),
 
         createCourse: builder.mutation({
@@ -80,11 +125,12 @@ export const coursesApi = createApi({
             }),
         }),
 
-        deleteCourse: builder.mutation({
+        toggleArchiveCourse: builder.mutation({
             query: (id) => ({
                 url: `/courses/${id}`,
-                method: "DELETE",
+                method: "PATCH",
             }),
+            invalidatesTags: [{ type: "Course" }],
         }),
     }),
 });
@@ -94,6 +140,10 @@ export const {
     useGetInfiniteCoursesQuery,
     useCreateCourseMutation,
     useUpdateCourseMutation,
-    useDeleteCourseMutation,
-    useGetCourseByIdQuery
+    useToggleArchiveCourseMutation,
+    useAddReviewMutation,
+    useUpdateReviewMutation,
+    useDeleteReviewMutation,
+    useGetCourseByIdQuery,
+    useToggleLikeReviewMutation
 } = coursesApi;

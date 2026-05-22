@@ -3,7 +3,7 @@ import type { IUser, UsersResponse } from "./types";
 
 export const usersApi = createApi({
     reducerPath: "usersApi",
-    tagTypes: ["UserProfile"],
+    tagTypes: ["UserProfile", "Learners"],
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_BACKEND_URL,
         prepareHeaders: (headers) => {
@@ -19,13 +19,15 @@ export const usersApi = createApi({
         >({
             query: ({ page, limit, search }) =>
                 `/users?role=learner&page=${page}&limit=${limit}&search=${search}`,
+            providesTags: [{ type: "Learners" }],
         }),
 
-        deleteUser: builder.mutation({
+        toggleUserStatus: builder.mutation({
             query: (id) => ({
                 url: `/users/${id}`,
-                method: "DELETE",
+                method: "PATCH",
             }),
+            invalidatesTags: [{ type: "Learners" }],
         }),
 
         getProfile: builder.query<IUser, void>({
@@ -76,4 +78,4 @@ export const usersApi = createApi({
     }),
 });
 
-export const { useGetLearnersQuery, useDeleteUserMutation, useGetProfileQuery, useUpdateProfileMutation, useCreateCheckoutSessionMutation, useVerifyStripeSessionMutation, useCompleteLessonMutation } = usersApi;
+export const { useGetLearnersQuery, useToggleUserStatusMutation, useGetProfileQuery, useUpdateProfileMutation, useCreateCheckoutSessionMutation, useVerifyStripeSessionMutation, useCompleteLessonMutation } = usersApi;

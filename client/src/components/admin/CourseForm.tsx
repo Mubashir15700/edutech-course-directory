@@ -153,7 +153,7 @@ export default function CourseForm({
                     {title}
                 </h2>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5 h-[70vh] max-h-[70vh] overflow-y-auto pr-2">
                     {/* Course Identity Details */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1">
