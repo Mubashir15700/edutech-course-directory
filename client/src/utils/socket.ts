@@ -1,0 +1,27 @@
+import { io } from 'socket.io-client';
+
+const SOCKET_URL = import.meta.env.VITE_BACKEND_URL;
+
+export const socket = io(SOCKET_URL, {
+    autoConnect: true,
+    withCredentials: true,
+    extraHeaders: {
+        "Access-Control-Allow-Origin": SOCKET_URL,
+        "Access-Control-Allow-Credentials": "true"
+    }
+});
+
+export const connectSocket = (userId: string) => {
+    if (!socket.connected) {
+        socket.io.opts.query = { userId };
+        socket.connect();
+        console.log('⚡ Socket pipeline connected successfully');
+    }
+};
+
+export const disconnectSocket = () => {
+    if (socket.connected) {
+        socket.disconnect();
+        console.log('🔌 Socket pipeline disconnected clean');
+    }
+};

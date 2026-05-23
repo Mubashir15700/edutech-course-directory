@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import app from "./app";
+import httpServer from "./app";
 import connectDB from "./config/db";
+import { initializeSocket } from "./services/socket";
 import { logger } from "./utils/logger";
 
 dotenv.config();
@@ -14,9 +15,12 @@ const startServer = async () => {
     try {
         await connectDB();
 
-        server = app.listen(PORT, () => {
+        server = httpServer.listen(PORT, () => {
             logger.info(`Server running on port ${PORT}`);
         });
+
+        // Initialize Socket.IO
+        initializeSocket(server);
     } catch (error) {
         logger.error("Failed to start server");
         process.exit(1);

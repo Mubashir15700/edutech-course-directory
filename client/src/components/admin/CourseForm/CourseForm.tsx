@@ -1,33 +1,13 @@
 import { useState, useEffect } from "react";
-import { createCourseSchema } from "../../validations/courseValidation";
-import { useGetCourseByIdQuery } from "../../features/courses/coursesApi";
-import type { Course } from "../../features/courses/types";
-import CourseLoading from "../CourseLoading";
-import CourseNotFound from "../CourseNotFound";
+import { createCourseSchema } from "../../../validations/courseValidation";
+import { useGetCourseByIdQuery } from "../../../features/courses/coursesApi";
+import type { Course } from "../../../features/courses/types";
+import CourseLoading from "../../CourseLoading";
+import CourseNotFound from "../../CourseNotFound";
+import type { CourseFormState, LessonInput } from "../../../types/course";
+import { createInitialFormState, emptyLesson, initialFormState } from "./CourseForm.utils";
 
-interface LessonInput {
-    title: string;
-    duration: string;
-    videoUrl?: string;
-    isFreePreview: boolean;
-}
-
-interface CourseFormState {
-    _id?: string;
-    name: string;
-    description: string;
-    instructor: string;
-    duration: string;
-    category: string;
-    price: number;
-    level: "Beginner" | "Intermediate" | "Advanced";
-    thumbnail: string;
-    tags: string[];
-    rating: number;
-    lessons: LessonInput[];
-}
-
-type Props = {
+type CourseFormProps = {
     initialData?: Partial<CourseFormState> | Course;
     onSubmit: (data: CourseFormState) => void;
     isLoading?: boolean;
@@ -39,55 +19,24 @@ export default function CourseForm({
     onSubmit,
     isLoading,
     title,
-}: Props) {
-    const [form, setForm] = useState<CourseFormState>({
-        name: "",
-        description: "",
-        instructor: "",
-        duration: "",
-        category: "",
-        price: 0,
-        level: "Beginner",
-        thumbnail: "",
-        tags: [],
-        rating: 0,
-        lessons: [],
-    });
-
+}: CourseFormProps) {
     // If 'id' is empty or missing, RTK Query will skip the network request entirely
     const { data: course, isLoading: isCourseLoading, error } = useGetCourseByIdQuery({ id: initialData?._id || "" }, {
         skip: !initialData?._id,
     });
 
+    const [form, setForm] = useState<CourseFormState>(initialFormState);
     const [tagInput, setTagInput] = useState("");
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
     // Dynamic state for adding a single lesson to the array
-    const [currentLesson, setCurrentLesson] = useState<LessonInput>({
-        title: "",
-        duration: "",
-        videoUrl: "",
-        isFreePreview: false,
-    });
+    const [currentLesson, setCurrentLesson] = useState<LessonInput>(emptyLesson);
 
     useEffect(() => {
         // Prioritize the freshly fetched async data from RTK Query, fallback to initialData
         const sourceData = course?.data || initialData;
 
         if (sourceData) {
-            setForm({
-                name: sourceData.name || "",
-                description: (sourceData as CourseFormState).description || "",
-                instructor: sourceData.instructor || "",
-                duration: sourceData.duration || "",
-                category: sourceData.category || "",
-                price: sourceData.price ?? 0,
-                level: sourceData.level as "Beginner" | "Intermediate" | "Advanced" || "Beginner",
-                thumbnail: sourceData.thumbnail || "",
-                tags: (sourceData as CourseFormState).tags || [],
-                rating: sourceData.rating ?? 0,
-                lessons: (sourceData as CourseFormState).lessons || [],
-            });
+            setForm(createInitialFormState(sourceData as Partial<CourseFormState>));
         }
     }, [course, initialData]);
 

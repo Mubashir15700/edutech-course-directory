@@ -3,7 +3,7 @@ import {
     useGetCoursesQuery,
     useUpdateCourseMutation,
 } from "../../features/courses/coursesApi";
-import CourseForm from "../../components/admin/CourseForm";
+import CourseForm from "../../components/admin/CourseForm/CourseForm";
 
 export default function EditCourse() {
     const { id } = useParams();

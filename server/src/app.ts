@@ -12,12 +12,14 @@ import userRoutes from "./routes/userRoutes";
 import enrollmentRoutes from "./routes/enrollmentRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
+import notificationRoutes from "./routes/notificationRoutes";
 
 import { notFoundMiddleware } from "./middleware/notFoundMiddleware";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import { limiter } from "./middleware/rateLimiter";
 
 import { handleStripeWebhook } from "./controllers/enrollmentController";
+import { createServer } from "http";
 
 const app = express();
 
@@ -54,6 +56,7 @@ app.use("/api/courses", courseRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.get("/", (req, res) => {
     res.status(200).json({
@@ -68,4 +71,6 @@ app.use(notFoundMiddleware);
 // Global error
 app.use(errorMiddleware);
 
-export default app;
+const httpServer = createServer(app);
+
+export default httpServer;

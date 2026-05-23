@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useCreateCourseMutation } from "../../features/courses/coursesApi";
-import CourseForm from "../../components/admin/CourseForm";
+import CourseForm from "../../components/admin/CourseForm/CourseForm";
 
 export default function AddCourse() {
     const [createCourse, { isLoading }] = useCreateCourseMutation();

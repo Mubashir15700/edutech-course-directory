@@ -4,6 +4,7 @@ import { coursesApi } from "../features/courses/coursesApi";
 import { usersApi } from "../features/users/usersApi";
 import { dashboardApi } from "../features/dashboard/dashboardApi";
 import { authApi } from "../features/auth/authApi";
+import { notificationApi } from "../features/notification/notificationApi";
 
 export const store = configureStore({
     reducer: {
@@ -11,12 +12,14 @@ export const store = configureStore({
         [usersApi.reducerPath]: usersApi.reducer,
         [dashboardApi.reducerPath]: dashboardApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
+        [notificationApi.reducerPath]: notificationApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
             coursesApi.middleware,
             usersApi.middleware,
             dashboardApi.middleware,
-            authApi.middleware
+            authApi.middleware,
+            notificationApi.middleware
         ),
 });

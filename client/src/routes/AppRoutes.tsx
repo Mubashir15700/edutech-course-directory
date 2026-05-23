@@ -4,8 +4,8 @@ import Landing from "../pages/Landing";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Courses from "../pages/Courses";
-import CourseDetails from "../pages/CourseDetails";
-import Profile from "../pages/Profile";
+import CourseDetails from "../pages/CourseDetails/CourseDetails";
+import MyLearning from "../pages/MyLearning/MyLearning";
 import CoursePlayer from "../pages/CoursePlayer";
 import PaymentSuccess from "../pages/PaymentSuccess";
 
@@ -54,14 +54,14 @@ export default function AppRoutes() {
             />
 
             {/* Learner */}
+            <Route path="/my-learning" element={
+                <ProtectedRoute>
+                    <MyLearning />
+                </ProtectedRoute>
+            } />
             <Route path="/courses/:id/lecture" element={
                 <ProtectedRoute>
                     <CoursePlayer />
-                </ProtectedRoute>
-            } />
-            <Route path="/profile" element={
-                <ProtectedRoute>
-                    <Profile />
                 </ProtectedRoute>
             } />
             <Route path="/payment-success" element={<PaymentSuccess />} />

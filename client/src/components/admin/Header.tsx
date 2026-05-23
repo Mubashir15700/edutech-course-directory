@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import NotificationBell from "../NotificationBell";
 
 export default function Header() {
     const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function Header() {
 
             <div className="flex items-center gap-4">
                 {/* Notifications */}
-                <button className="text-gray-600 hover:text-black">🔔</button>
+                <NotificationBell />
 
                 {/* Profile + Logout */}
                 <div className="flex items-center gap-3">

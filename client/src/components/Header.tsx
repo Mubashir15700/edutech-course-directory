@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import NotificationBell from "./NotificationBell";
 
 export default function Header() {
     const navigate = useNavigate();
@@ -23,29 +24,27 @@ export default function Header() {
             {/* Right Section */}
             <div className="flex items-center gap-5">
                 {/* Notifications */}
-                <button className="text-gray-600 hover:text-black text-lg">
-                    🔔
-                </button>
+                <NotificationBell />
 
-                {/* Profile */}
+                {/* My Learning */}
                 <div className="flex items-center gap-4">
                     {user ? (
                         <div className="flex items-center gap-3">
 
                             {/* Wrap Avatar and Name inside a clickable Link container */}
                             <Link
-                                to="/profile"
+                                to="/my-learning"
                                 className="flex items-center gap-2 group cursor-pointer focus:outline-none"
-                                title="View your profile"
+                                title="View your learning dashboard"
                             >
                                 {/* Profile Avatar with First Letter - Added scale effect on hover */}
                                 <div className="w-8 h-8 bg-blue-600 text-white flex items-center justify-center rounded-full font-semibold uppercase text-sm shadow-sm select-none group-hover:bg-blue-700 transition-colors duration-200">
                                     {user?.name?.charAt(0)}
                                 </div>
 
-                                {/* User Name - Added color change on hover */}
+                                {/* My Learning Text */}
                                 <span className="text-sm font-medium text-gray-700 hidden sm:block group-hover:text-blue-600 transition-colors duration-200">
-                                    {user?.name}
+                                    My Learning
                                 </span>
                             </Link>
 
