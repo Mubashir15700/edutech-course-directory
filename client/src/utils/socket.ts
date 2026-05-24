@@ -1,6 +1,7 @@
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const SOCKET_URL = new URL(BACKEND_URL).origin;
 
 export const socket = io(SOCKET_URL, {
     autoConnect: true,

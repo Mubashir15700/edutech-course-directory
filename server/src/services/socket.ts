@@ -18,7 +18,7 @@ export const initializeSocket = (server: HttpServer) => {
     io.on('connection', (socket: Socket) => {
         const userId = socket.handshake.query.userId as string;
 
-        console.log(`User ${userId} connected with socket ID ${socket.id}.`);
+        logger.info(`User ${userId} connected with socket ID ${socket.id}.`);
 
         if (userId) {
             const currentSockets = activeConnections.get(userId) || [];
@@ -52,4 +52,9 @@ export const emitToUser = (userId: string, event: string, payload: any) => {
             io.to(socketId).emit(event, payload);
         });
     }
+};
+
+export const emitToAll = (event: string, payload: any) => {
+    if (!io) return;
+    io.emit(event, payload); // standard socket.io broadcast to all connections
 };

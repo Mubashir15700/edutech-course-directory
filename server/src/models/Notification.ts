@@ -19,4 +19,7 @@ const NotificationSchema = new Schema<INotification>({
     timestamps: true
 });
 
+// Index on createdAt for efficient sorting and automatic expiration after 7 days (604800 seconds)
+NotificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 604800 });
+
 export const Notification = model<INotification>('Notification', NotificationSchema);

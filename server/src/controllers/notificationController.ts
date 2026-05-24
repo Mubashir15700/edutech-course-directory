@@ -3,8 +3,6 @@ import { Notification } from '../models/Notification';
 import { AuthRequest } from '../middleware/authMiddleware';
 
 export const getMyNotifications = async (req: AuthRequest, res: Response) => {
-    console.log(req.user);
-
     const notifications = await Notification.find({ recipient: req.user.id })
         .sort({ createdAt: -1 })
         .limit(10)

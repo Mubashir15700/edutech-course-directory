@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Course from "../models/Course";
 import Review from "../models/Review";
 import { AuthRequest } from "../middleware/authMiddleware";
+import { triggerGlobalNotification } from "../utils/notify";
 
 export const getCourses = async (req: Request, res: Response) => {
     const { page = "1", limit = "6", search = "", category = "", isAdmin = "false" } = req.query;
@@ -84,7 +85,15 @@ export const getCourseById = async (req: AuthRequest, res: Response) => {
 export const createCourse = async (req: Request, res: Response) => {
     const course = new Course(req.body);
     const saved = await course.save();
+
     res.status(201).json(saved);
+
+    // Fire and forget the global notification background pipeline safely
+    triggerGlobalNotification(
+        "New Course Available! 🎓",
+        `"${saved.name}" has just been published. Start learning today!`,
+        "course"
+    );
 };
 
 export const updateCourse = async (req: Request, res: Response) => {
