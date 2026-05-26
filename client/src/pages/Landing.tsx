@@ -1,19 +1,17 @@
 import { Link } from "react-router-dom";
+import { useGetLandingPageStatsQuery } from "../features/dashboard/dashboardApi";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function Landing() {
-    const mockdata = {
-        "categories": [
-            "Fullstack",
-            "Database",
-            "Devops",
-            "Architecture",
-        ],
-        "counts": {
-            courses: 45,
-            learners: 1200,
-            rating: 4.8
-        }
-    };
+    const { data, isLoading } = useGetLandingPageStatsQuery();
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen col-span-full">
+                <LoadingSpinner />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -53,15 +51,15 @@ export default function Landing() {
             <div className="max-w-5xl mx-auto px-4 py-12 border-t border-b border-gray-100">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-center">
                     <div>
-                        <p className="text-4xl font-extrabold text-blue-600">{mockdata.counts.courses}+</p>
+                        <p className="text-4xl font-extrabold text-blue-600">{data?.counts.courses}+</p>
                         <p className="text-sm font-medium text-gray-500 uppercase mt-1">Expert Courses</p>
                     </div>
                     <div>
-                        <p className="text-4xl font-extrabold text-purple-600">{mockdata.counts.learners}+</p>
+                        <p className="text-4xl font-extrabold text-purple-600">{data?.counts.learners}+</p>
                         <p className="text-sm font-medium text-gray-500 uppercase mt-1">Active Learners</p>
                     </div>
                     <div className="col-span-2 md:col-span-1">
-                        <p className="text-4xl font-extrabold text-indigo-600">{mockdata.counts.rating}★</p>
+                        <p className="text-4xl font-extrabold text-indigo-600">{data?.counts.rating.toFixed(1)}★</p>
                         <p className="text-sm font-medium text-gray-500 uppercase mt-1">Average Rating</p>
                     </div>
                 </div>
@@ -73,7 +71,7 @@ export default function Landing() {
                     Browse Top Categories
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {mockdata.categories.map((category) => (
+                    {data?.categories.map((category) => (
                         <Link
                             key={category}
                             to={`/courses?category=${encodeURIComponent(category)}`}

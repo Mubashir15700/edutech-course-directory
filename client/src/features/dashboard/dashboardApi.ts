@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { DashboardStats } from "./types";
+import type { DashboardStats, LandingPageStats } from "./types";
 
 export const dashboardApi = createApi({
     reducerPath: "dashboardApi",
@@ -18,10 +18,14 @@ export const dashboardApi = createApi({
     }),
 
     endpoints: (builder) => ({
-        getDashboardStats: builder.query<DashboardStats, void>({
+        getAdminDashboardStats: builder.query<DashboardStats, void>({
             query: () => "/dashboard/stats",
+        }),
+
+        getLandingPageStats: builder.query<LandingPageStats, void>({
+            query: () => "/dashboard/landing-stats",
         }),
     }),
 });
 
-export const { useGetDashboardStatsQuery } = dashboardApi;
+export const { useGetAdminDashboardStatsQuery, useGetLandingPageStatsQuery } = dashboardApi;

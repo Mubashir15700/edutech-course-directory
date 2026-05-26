@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
     useGetCourseByIdQuery,
     useToggleLikeReviewMutation,
@@ -10,9 +10,10 @@ import {
 import { useGetProfileQuery } from "../../features/users/usersApi";
 import { calculateStarBreakdown } from "./CourseDetails.utils";
 import StudentReviews from "./StudentReviews";
-import CourseLoading from "../../components/CourseLoading";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import CourseNotFound from "../../components/CourseNotFound";
 import EnrollButton from "../../components/EnrollButton";
+import BackButton from "../../components/BackButton";
 
 export default function CourseDetails() {
     const { id } = useParams<{ id: string }>();
@@ -43,7 +44,7 @@ export default function CourseDetails() {
         return calculateStarBreakdown(otherReviews, userReview);
     }, [otherReviews, userReview]);
 
-    if (isLoading) return <CourseLoading />;
+    if (isLoading) return <LoadingSpinner />;
     if (error || !course) return <CourseNotFound />;
 
     const handleLikeToggle = (reviewId: string) => {
@@ -101,11 +102,7 @@ export default function CourseDetails() {
     return (
         <div className="min-h-screen bg-gray-50/50 pb-16">
             {/* Top Navigation Banner */}
-            <div className="max-w-6xl mx-auto px-4 mb-6 sm:px-6 lg:px-8">
-                <Link to="/courses" className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-2">
-                    ← Back to Course Directory
-                </Link>
-            </div>
+            <BackButton />
 
             {/* Main Content Layout */}
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

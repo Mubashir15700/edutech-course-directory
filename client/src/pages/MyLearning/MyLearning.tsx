@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useGetProfileQuery, useUpdateProfileMutation } from "../../features/users/usersApi";
 import MyCourses from "./MyCourses";
 import AccountSettings from "./AccountSettings";
+import BackButton from "../../components/BackButton";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function MyLearning() {
     const { data: user, isLoading } = useGetProfileQuery();
@@ -12,10 +14,10 @@ export default function MyLearning() {
 
     if (isLoading || !user) {
         return (
-            <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-gray-50/50">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-blue-600"></div>
+            <div className="flex justify-center items-center h-screen col-span-full">
+                <LoadingSpinner />
             </div>
-        );
+        )
     }
 
     // Dynamic frontend filter checking flat pre-calculated backend progress variables
@@ -49,6 +51,7 @@ export default function MyLearning() {
     return (
         <div className="min-h-[calc(100vh-64px)] bg-gray-50/50 p-4 sm:p-6 lg:p-8">
             <div className="max-w-5xl mx-auto">
+                <BackButton />
 
                 {/* Top Overview Header */}
                 <div className="bg-white rounded-2xl border border-gray-200/80 p-6 shadow-sm mb-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">

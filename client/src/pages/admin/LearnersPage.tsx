@@ -7,6 +7,7 @@ import type { User } from "../../features/users/types";
 import Table, { type Column } from "../../components/admin/Table";
 import Pagination from "../../components/Pagination";
 import Filters from "../../components/Filters";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function LearnersPage() {
     const [search, setSearch] = useState("");
@@ -45,13 +46,7 @@ export default function LearnersPage() {
         return 0;
     });
 
-    if (isLoading) {
-        return (
-            <div className="h-[60vh] flex justify-center items-center">
-                <p className="text-lg">Loading learners...</p>
-            </div>
-        );
-    }
+    if (isLoading) return <LoadingSpinner />;
 
     if (error) {
         return (

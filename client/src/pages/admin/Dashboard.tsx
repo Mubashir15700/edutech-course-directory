@@ -1,6 +1,7 @@
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
-import { useGetDashboardStatsQuery } from "../../features/dashboard/dashboardApi";
+import { useGetAdminDashboardStatsQuery } from "../../features/dashboard/dashboardApi";
 import Table, { type Column } from "../../components/admin/Table";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 interface SaleRecord {
     _id: string;
@@ -16,7 +17,7 @@ interface SaleRecord {
 }
 
 export default function Dashboard() {
-    const { data, isLoading } = useGetDashboardStatsQuery();
+    const { data, isLoading } = useGetAdminDashboardStatsQuery();
 
     const totalCourses = data?.totalCourses || 0;
     const totalLearners = data?.totalLearners || 0;
@@ -70,13 +71,7 @@ export default function Dashboard() {
         }
     ];
 
-    if (isLoading) {
-        return (
-            <div className="h-[calc(100vh-120px)] flex justify-center items-center">
-                <p className="text-lg font-semibold">Loading dashboard...</p>
-            </div>
-        );
-    }
+    if (isLoading) return <LoadingSpinner />;
 
     return (
         <div className="h-[80vh] max-h-[80vh] overflow-y-auto pr-2">

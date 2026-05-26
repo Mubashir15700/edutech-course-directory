@@ -4,6 +4,7 @@ import {
     useUpdateCourseMutation,
 } from "../../features/courses/coursesApi";
 import CourseForm from "../../components/admin/CourseForm/CourseForm";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function EditCourse() {
     const { id } = useParams();
@@ -29,12 +30,13 @@ export default function EditCourse() {
         }
     };
 
-    if (isLoading || !course)
+    if (isLoading || !course) {
         return (
-            <div className="min-h-screen flex justify-center items-center">
-                <p className="text-lg font-semibold">Loading course...</p>
+            <div className="flex justify-center items-center h-screen col-span-full">
+                <LoadingSpinner />
             </div>
         );
+    }
 
     return (
         <CourseForm

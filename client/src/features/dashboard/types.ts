@@ -21,3 +21,12 @@ export type DashboardStats = {
         Enrollments: number;
     }[];
 };
+
+export type LandingPageStats = {
+    categories: string[];
+    counts: {
+        courses: number;
+        learners: number;
+        rating: number;
+    }
+};

@@ -1,4 +1,4 @@
-const CourseLoading = () => {
+const LoadingSpinner = () => {
     return (
         <div className="min-h-[calc(80vh-64px)] w-full flex items-center justify-center bg-gray-50/50">
             <div className="relative flex items-center justify-center">
@@ -9,4 +9,4 @@ const CourseLoading = () => {
     )
 }
 
-export default CourseLoading;
+export default LoadingSpinner;

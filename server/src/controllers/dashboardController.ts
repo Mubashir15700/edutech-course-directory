@@ -55,3 +55,19 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         chartData: formattedChartData // Injected into your global dashboard response payload
     });
 };
+
+export const getLandingPageStats = async (req: Request, res: Response) => {
+    const data = {
+        categories: await Course.distinct("category"),
+        counts: {
+            courses: await Course.countDocuments(),
+            learners: await User.countDocuments({ role: "learner" }),
+            rating: await Course.aggregate([
+                { $match: { rating: { $exists: true } } },
+                { $group: { _id: null, avgRating: { $avg: "$rating" } } }
+            ]).then(result => (result[0] ? result[0].avgRating : 0))
+        },
+    };
+
+    res.json(data);
+};

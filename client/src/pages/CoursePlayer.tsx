@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useGetProfileQuery, useCompleteLessonMutation } from "../features/users/usersApi";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function CoursePlayer() {
     const { id: courseId } = useParams();
@@ -9,7 +10,13 @@ export default function CoursePlayer() {
     const [completeLesson] = useCompleteLessonMutation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    if (isLoading) return <div className="p-12 text-center text-gray-400">Opening Classroom Workspace...</div>;
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen col-span-full">
+                <LoadingSpinner />
+            </div>
+        )
+    };
     if (!user) return <div className="p-12 text-center text-red-500">Please log in to continue.</div>;
 
     const activeCourseTrack = user.enrolledCourses?.find((c: any) => c._id === courseId);

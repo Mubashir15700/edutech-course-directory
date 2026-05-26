@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createCourseSchema } from "../../../validations/courseValidation";
 import { useGetCourseByIdQuery } from "../../../features/courses/coursesApi";
 import type { Course } from "../../../features/courses/types";
-import CourseLoading from "../../CourseLoading";
+import CourseLoading from "../../LoadingSpinner";
 import CourseNotFound from "../../CourseNotFound";
 import type { CourseFormState, LessonInput } from "../../../types/course";
 import { createInitialFormState, emptyLesson, initialFormState } from "./CourseForm.utils";

@@ -94,13 +94,6 @@ export default function NotificationBell() {
                             ))
                         )}
                     </div>
-
-                    {/* View All Footer Link */}
-                    <div className="border-t border-gray-50 px-4 py-2 text-center">
-                        <button className="text-xs font-semibold text-gray-600 hover:text-gray-900 w-full py-1">
-                            View all history
-                        </button>
-                    </div>
                 </div>
             )}
         </div>

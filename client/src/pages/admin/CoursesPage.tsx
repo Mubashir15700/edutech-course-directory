@@ -8,6 +8,7 @@ import type { Course } from "../../features/courses/types";
 import Table, { type Column } from "../../components/admin/Table";
 import Pagination from "../../components/Pagination";
 import Filters from "../../components/Filters";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function CoursesPage() {
     const [search, setSearch] = useState("");
@@ -39,13 +40,7 @@ export default function CoursesPage() {
         }
     };
 
-    if (isLoading) {
-        return (
-            <div className="h-[60vh] flex justify-center items-center">
-                <p className="text-lg font-medium">Loading courses...</p>
-            </div>
-        );
-    }
+    if (isLoading) return <LoadingSpinner />;
 
     if (error) {
         return (

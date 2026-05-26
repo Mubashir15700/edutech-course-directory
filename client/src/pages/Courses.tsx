@@ -3,6 +3,7 @@ import { useInView } from "react-intersection-observer";
 import { useGetInfiniteCoursesQuery } from "../features/courses/coursesApi";
 import CourseCard from "../components/CourseCard";
 import Filters from "../components/Filters";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 function Courses() {
     const [search, setSearch] = useState("");
@@ -71,9 +72,7 @@ function Courses() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px] items-start">
                 {isLoading ? (
                     <div className="flex justify-center items-center h-full col-span-full">
-                        <p className="text-lg font-semibold">
-                            Loading courses...
-                        </p>
+                        <LoadingSpinner />
                     </div>
                 ) : error ? (
                     <div className="flex justify-center items-center h-full col-span-full">
@@ -101,7 +100,7 @@ function Courses() {
                         Loading more courses...
                     </p>
                 )}
-                {!hasMore && sortedCourses.length > 0 && (
+                {!isFetching && !hasMore && sortedCourses.length > 0 && (
                     <p className="text-xs text-gray-400 font-normal">
                         You've reached the end of the catalog.
                     </p>
