@@ -18,12 +18,16 @@ import BackButton from "../../components/BackButton";
 export default function CourseDetails() {
     const { id } = useParams<{ id: string }>();
 
+    const token = localStorage.getItem("token");
+
     const [isEditingMyReview, setIsEditingMyReview] = useState(false);
     const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
     const [isCurriculumOpen, setIsCurriculumOpen] = useState(true);
 
     // Fetch profile state to determine if user is already enrolled
-    const { data: user } = useGetProfileQuery();
+    const { data: user } = useGetProfileQuery(undefined, {
+        skip: !token
+    });
     const { data: course, isLoading, error } = useGetCourseByIdQuery({ id: id || "", userId: user?._id, fetchReviews: true });
     const [toggleLikeReview] = useToggleLikeReviewMutation();
     const [addReview, { isLoading: isSubmitting }] = useAddReviewMutation();
@@ -105,7 +109,7 @@ export default function CourseDetails() {
             <BackButton />
 
             {/* Main Content Layout */}
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
                     {/* LEFT COLUMN: Main course content detailed breakdowns */}

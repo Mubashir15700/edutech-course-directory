@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useLoginMutation } from "../features/auth/authApi";
 import { loginSchema } from "../validations/authValidation";
 
 export default function Login() {
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const [form, setForm] = useState({ email: "", password: "" });
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
     const [errorMsg, setErrorMsg] = useState("");
-
-    const navigate = useNavigate();
 
     const [login, { isLoading }] = useLoginMutation();
 
@@ -34,15 +35,14 @@ export default function Login() {
 
         try {
             const user = await login(form).unwrap();
+            const isAdmin = user.role === "admin";
 
             localStorage.setItem("token", user.token);
             localStorage.setItem("user", JSON.stringify(user));
 
-            if (user.role === "admin") {
-                navigate("/admin");
-            } else {
-                navigate("/courses");
-            }
+            const redirectPath = location.state?.from ?? (isAdmin ? "/admin" : "/courses");
+
+            navigate(redirectPath);
         } catch (err: any) {
             setErrorMsg(err?.data?.message || "Login failed");
         }

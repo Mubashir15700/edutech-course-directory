@@ -1,5 +1,7 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useCreateCheckoutSessionMutation } from "../features/users/usersApi";
+import ConfirmationModal from "../components/ConfirmationModal";
 
 interface EnrollButtonProps {
     courseId: string;
@@ -10,15 +12,22 @@ interface EnrollButtonProps {
 
 export default function EnrollButton({ courseId, isPriceFree, user, isAlreadyEnrolled }: EnrollButtonProps) {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [createCheckoutSession, { isLoading }] = useCreateCheckoutSessionMutation();
 
-    const handleEnrollment = async () => {
+    const [showModal, setShowModal] = useState(false);
+
+    const handleShowConfirmModal = () => {
         if (!user) {
-            navigate("/login");
+            navigate("/login", { state: { from: location.pathname } });
             return;
         }
 
+        setShowModal(true);
+    }
+
+    const handleEnrollment = async () => {
         try {
             const response = await createCheckoutSession({ courseId }).unwrap();
 
@@ -46,24 +55,37 @@ export default function EnrollButton({ courseId, isPriceFree, user, isAlreadyEnr
     }
 
     return (
-        <button
-            onClick={handleEnrollment}
-            disabled={isLoading}
-            className={`w-full py-3 text-white font-bold rounded-xl transition shadow-md tracking-wide text-sm flex items-center justify-center gap-2 ${isPriceFree
-                ? "bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400"
-                : "bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400"
-                }`}
-        >
-            {isLoading ? (
-                <>
-                    <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></div>
-                    Securing Workspace Space...
-                </>
-            ) : isPriceFree ? (
-                "Enroll for Free Now"
-            ) : (
-                "Buy Premium Course"
-            )}
-        </button>
+        <>
+            <button
+                onClick={handleShowConfirmModal}
+                disabled={isLoading}
+                className={`w-full py-3 text-white font-bold rounded-xl transition shadow-md tracking-wide text-sm flex items-center justify-center gap-2 ${isPriceFree
+                    ? "bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400"
+                    : "bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400"
+                    }`}
+            >
+                {isLoading ? (
+                    <>
+                        <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></div>
+                        Securing Workspace Space...
+                    </>
+                ) : isPriceFree ? (
+                    "Enroll for Free Now"
+                ) : (
+                    "Buy Premium Course"
+                )}
+            </button>
+
+            <ConfirmationModal
+                isOpen={showModal}
+                isLoading={isLoading}
+                onClose={() => setShowModal(false)}
+                onConfirm={handleEnrollment}
+                title="Confirm Course Enrollment"
+                message="Are you ready to start your learning journey? Confirming will enroll you in this course and grant you immediate access to all lessons, resources, and community forums."
+                confirmLabel="Confirm & Enroll"
+                cancelLabel="Go Back"
+            />
+        </>
     );
 }

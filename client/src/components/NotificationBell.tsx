@@ -5,8 +5,12 @@ export default function NotificationBell() {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    const token = localStorage.getItem("token");
+
     // Dynamic data subscription with real-time append hooks handling everything automatically
-    const { data: notifications = [] } = useGetNotificationsQuery();
+    const { data: notifications = [] } = useGetNotificationsQuery(undefined, {
+        skip: !token, // Skips the API request entirely if token is null or undefined
+    });
     const [markAllRead] = useMarkAllReadMutation();
 
     const hasUnread = notifications.some((n: any) => n.isUnread);

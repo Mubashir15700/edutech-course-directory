@@ -9,12 +9,21 @@ import Table, { type Column } from "../../components/admin/Table";
 import Pagination from "../../components/Pagination";
 import Filters from "../../components/Filters";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 export default function CoursesPage() {
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("");
     const [sort, setSort] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const [toggleData, setToggleData] = useState<{
+        courseId: string | null,
+        isArchived: boolean
+    }>({
+        courseId: null,
+        isArchived: false
+    });
+    const [showModal, setShowModal] = useState(false);
 
     const [toggleArchiveCourse, { isLoading: isArchiving }] = useToggleArchiveCourseMutation();
 
@@ -32,12 +41,23 @@ export default function CoursesPage() {
         return 0;
     });
 
-    const handleToggleArchive = async (id: string) => {
+    const handleShowConfirmModal = (id: string, isArchived: boolean) => {
+        setToggleData({
+            courseId: id,
+            isArchived
+        });
+
+        setShowModal(true);
+    }
+
+    const handleToggleArchive = async () => {
         try {
-            await toggleArchiveCourse(id).unwrap();
+            await toggleArchiveCourse(toggleData.courseId).unwrap();
         } catch (err) {
             console.error("Toggle archive failed", err);
         }
+
+        setShowModal(false);
     };
 
     if (isLoading) return <LoadingSpinner />;
@@ -99,7 +119,7 @@ export default function CoursesPage() {
                                 Edit
                             </Link>
                             <button
-                                onClick={() => handleToggleArchive(course._id)}
+                                onClick={() => handleShowConfirmModal(course._id, course.isArchived)}
                                 className="text-red-600"
                             >
                                 {isArchiving ? "Toggling..." : course.isArchived ? "Unarchive" : "Archive"}
@@ -115,6 +135,19 @@ export default function CoursesPage() {
                 totalPages={data?.totalPages || 1}
                 setCurrentPage={setCurrentPage}
                 marginTop="mt-6"
+            />
+
+            <ConfirmationModal
+                isOpen={showModal}
+                isLoading={isLoading || isArchiving}
+                onClose={() => setShowModal(false)}
+                onConfirm={handleToggleArchive}
+                title={toggleData.isArchived ? "Unarchive Course Catalog" : "Archive Course Catalog"}
+                message={toggleData.isArchived
+                    ? "Are you sure you want to unarchive this course? It will immediately become visible to search metrics and active learners."
+                    : "Are you sure you want to archive this course? This hides the module from discovery pages without deleting existing learner histories."}
+                confirmLabel={toggleData.isArchived ? "Yes, Restore" : "Yes, Archive"}
+                cancelLabel="Go Back"
             />
         </div>
     );

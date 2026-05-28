@@ -8,11 +8,20 @@ import Table, { type Column } from "../../components/admin/Table";
 import Pagination from "../../components/Pagination";
 import Filters from "../../components/Filters";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 export default function LearnersPage() {
     const [search, setSearch] = useState("");
     const [sort, setSort] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const [toggleData, setToggleData] = useState<{
+        learnerId: string | null,
+        isActive: boolean
+    }>({
+        learnerId: null,
+        isActive: false
+    });
+    const [showModal, setShowModal] = useState(false);
 
     const { data, isLoading, error } = useGetLearnersQuery({
         page: currentPage,
@@ -21,14 +30,23 @@ export default function LearnersPage() {
     });
     const [toggleUserStatus, { isLoading: isDeleting }] = useToggleUserStatusMutation();
 
-    const handleDelete = async (id: string) => {
-        if (!window.confirm("Toggle this learner's status?")) return;
+    const handleShowConfirmModal = (id: string, isActive: boolean) => {
+        setToggleData({
+            learnerId: id,
+            isActive
+        });
 
+        setShowModal(true);
+    }
+
+    const handleDelete = async () => {
         try {
-            await toggleUserStatus(id).unwrap();
+            await toggleUserStatus(toggleData.learnerId).unwrap();
         } catch (err) {
             console.error("Toggle status failed", err);
         }
+
+        setShowModal(false);
     };
 
     const sortedLearners = [...(data?.data || [])].sort((a, b) => {
@@ -91,7 +109,7 @@ export default function LearnersPage() {
                     data={sortedLearners}
                     renderActions={(user) => (
                         <button
-                            onClick={() => handleDelete(user._id)}
+                            onClick={() => handleShowConfirmModal(user._id, user.isActive)}
                             className="text-red-600"
                         >
                             {isDeleting ? "Toggling..." : user.isActive ? "Deactivate" : "Activate"}
@@ -106,6 +124,19 @@ export default function LearnersPage() {
                 totalPages={data?.totalPages || 1}
                 setCurrentPage={setCurrentPage}
                 marginTop="mt-6"
+            />
+
+            <ConfirmationModal
+                isOpen={showModal}
+                isLoading={isLoading || isDeleting}
+                onClose={() => setShowModal(false)}
+                onConfirm={handleDelete}
+                title={toggleData.isActive ? "Deactivate Learner Profile" : "Activate Learner Profile"}
+                message={toggleData.isActive
+                    ? "Deactivating this profile suspends the user's login access rights and pauses active certificate metrics until reinstated."
+                    : "Activating this profile completely restores full login capability, platform access, and course progress records."}
+                confirmLabel={toggleData.isActive ? "Deactivate User" : "Activate User"}
+                cancelLabel="Go Back"
             />
         </div>
     );
