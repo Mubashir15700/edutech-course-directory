@@ -10,6 +10,8 @@ import Pagination from "../../components/Pagination";
 import Filters from "../../components/Filters";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import type { ToastType } from "../../components/Toast";
+import Toast from "../../components/Toast";
 
 export default function CoursesPage() {
     const [search, setSearch] = useState("");
@@ -24,6 +26,11 @@ export default function CoursesPage() {
         isArchived: false
     });
     const [showModal, setShowModal] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
+
+    const showToast = (message: string, type: ToastType) => {
+        setToast({ message, type });
+    };
 
     const [toggleArchiveCourse, { isLoading: isArchiving }] = useToggleArchiveCourseMutation();
 
@@ -53,8 +60,11 @@ export default function CoursesPage() {
     const handleToggleArchive = async () => {
         try {
             await toggleArchiveCourse(toggleData.courseId).unwrap();
+
+            showToast("Toggle archive success", "success");
         } catch (err) {
-            console.error("Toggle archive failed", err);
+            showToast("Toggle archive failed", "error");
+
         }
 
         setShowModal(false);
@@ -149,6 +159,14 @@ export default function CoursesPage() {
                 confirmLabel={toggleData.isArchived ? "Yes, Restore" : "Yes, Archive"}
                 cancelLabel="Go Back"
             />
+
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </div>
     );
 }

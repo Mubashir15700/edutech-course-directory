@@ -14,6 +14,8 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import CourseNotFound from "../../components/CourseNotFound";
 import EnrollButton from "../../components/EnrollButton";
 import BackButton from "../../components/BackButton";
+import type { ToastType } from "../../components/Toast";
+import Toast from "../../components/Toast";
 
 export default function CourseDetails() {
     const { id } = useParams<{ id: string }>();
@@ -23,6 +25,11 @@ export default function CourseDetails() {
     const [isEditingMyReview, setIsEditingMyReview] = useState(false);
     const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
     const [isCurriculumOpen, setIsCurriculumOpen] = useState(true);
+    const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
+
+    const showToast = (message: string, type: ToastType) => {
+        setToast({ message, type });
+    };
 
     // Fetch profile state to determine if user is already enrolled
     const { data: user } = useGetProfileQuery(undefined, {
@@ -87,8 +94,10 @@ export default function CourseDetails() {
                     comment: data.comment.trim()
                 }).unwrap();
             }
+
+            showToast("process review action success", "success");
         } catch (err) {
-            console.error("Failed to process review action:", err);
+            showToast("Failed to process review action", "error");
         }
     };
 
@@ -250,6 +259,14 @@ export default function CourseDetails() {
 
                 </div>
             </div>
+
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </div>
     );
 }

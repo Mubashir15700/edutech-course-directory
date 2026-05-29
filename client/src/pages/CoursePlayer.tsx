@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useGetProfileQuery, useCompleteLessonMutation } from "../features/users/usersApi";
 import LoadingSpinner from "../components/LoadingSpinner";
+import type { ToastType } from "../components/Toast";
+import Toast from "../components/Toast";
 
 export default function CoursePlayer() {
     const { id: courseId } = useParams();
@@ -9,6 +11,11 @@ export default function CoursePlayer() {
     const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
     const [completeLesson] = useCompleteLessonMutation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
+
+    const showToast = (message: string, type: ToastType) => {
+        setToast({ message, type });
+    };
 
     if (isLoading) {
         return (
@@ -38,8 +45,10 @@ export default function CoursePlayer() {
             if (currentLessonIndex < lessons.length - 1) {
                 setCurrentLessonIndex(prev => prev + 1);
             }
+
+            showToast("Lesson completed successfully", "success");
         } catch (error) {
-            console.error("Failed to complete lesson:", error);
+            showToast("Failed to complete lesson", "error");
         }
     };
 
@@ -241,6 +250,13 @@ export default function CoursePlayer() {
                 </div>
             </footer>
 
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </div>
     );
 }

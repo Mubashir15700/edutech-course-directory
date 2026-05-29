@@ -9,6 +9,8 @@ import Pagination from "../../components/Pagination";
 import Filters from "../../components/Filters";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import type { ToastType } from "../../components/Toast";
+import Toast from "../../components/Toast";
 
 export default function LearnersPage() {
     const [search, setSearch] = useState("");
@@ -22,6 +24,11 @@ export default function LearnersPage() {
         isActive: false
     });
     const [showModal, setShowModal] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
+
+    const showToast = (message: string, type: ToastType) => {
+        setToast({ message, type });
+    };
 
     const { data, isLoading, error } = useGetLearnersQuery({
         page: currentPage,
@@ -42,8 +49,10 @@ export default function LearnersPage() {
     const handleDelete = async () => {
         try {
             await toggleUserStatus(toggleData.learnerId).unwrap();
+
+            showToast("Toggle status success", "success");
         } catch (err) {
-            console.error("Toggle status failed", err);
+            showToast("Toggle status failed", "error");
         }
 
         setShowModal(false);
@@ -138,6 +147,14 @@ export default function LearnersPage() {
                 confirmLabel={toggleData.isActive ? "Deactivate User" : "Activate User"}
                 cancelLabel="Go Back"
             />
+
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </div>
     );
 }

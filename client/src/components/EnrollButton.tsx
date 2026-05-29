@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCreateCheckoutSessionMutation } from "../features/users/usersApi";
 import ConfirmationModal from "../components/ConfirmationModal";
+import Toast, { type ToastType } from "../components/Toast";
 
 interface EnrollButtonProps {
     courseId: string;
@@ -17,6 +18,11 @@ export default function EnrollButton({ courseId, isPriceFree, user, isAlreadyEnr
     const [createCheckoutSession, { isLoading }] = useCreateCheckoutSessionMutation();
 
     const [showModal, setShowModal] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
+
+    const showToast = (message: string, type: ToastType) => {
+        setToast({ message, type });
+    };
 
     const handleShowConfirmModal = () => {
         if (!user) {
@@ -39,7 +45,7 @@ export default function EnrollButton({ courseId, isPriceFree, user, isAlreadyEnr
                 navigate(`/courses/${courseId}/lecture`);
             }
         } catch (error: any) {
-            alert(error?.data?.message || "Enrollment processing failed. Please try again.");
+            showToast("Enrollment processing failed. Please try again.", "error");
         }
     };
 
@@ -86,6 +92,14 @@ export default function EnrollButton({ courseId, isPriceFree, user, isAlreadyEnr
                 confirmLabel="Confirm & Enroll"
                 cancelLabel="Go Back"
             />
+
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </>
     );
 }
