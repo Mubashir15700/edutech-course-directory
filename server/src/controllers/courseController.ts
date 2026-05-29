@@ -2,16 +2,32 @@ import { Request, Response } from "express";
 import Course from "../models/Course";
 import Review from "../models/Review";
 import { AuthRequest } from "../middleware/authMiddleware";
+import { redisClient } from "../config/redis";
 import { triggerGlobalNotification } from "../utils/notify";
+import { clearCourseCache } from "../utils/cacheInvalidator";
+import { logger } from "../utils/logger";
+
+const CACHE_TTL = 900; // 15 minutes in seconds
 
 export const getCourses = async (req: Request, res: Response) => {
     const { page = "1", limit = "6", search = "", category = "", isAdmin = "false" } = req.query;
-
     const isAdminBool = isAdmin === "true";
 
-    // Define exactly what fields the Course Card grid component needs
-    let selectedFields = "name instructor duration category price level thumbnail rating numReviews";
+    // Generate a unique cache key based on query filters and page indexing
+    const cacheKey = `courses:page=${page}:limit=${limit}:search=${search}:cat=${category}:admin=${isAdmin}`;
 
+    try {
+        // Try fetching from Redis RAM
+        const cachedData = await redisClient.get(cacheKey);
+        if (cachedData) {
+            return res.json(JSON.parse(cachedData)); // Return cached payload instantly
+        }
+    } catch (err) {
+        logger.error("Redis Read Error:", err); // Fail gracefully if Redis hiccups
+    }
+
+    // --- DATABASE FALLBACK ---
+    let selectedFields = "name instructor duration category price level thumbnail rating numReviews";
     const query: any = {
         isArchived: false,
         name: { $regex: search, $options: "i" },
@@ -21,7 +37,6 @@ export const getCourses = async (req: Request, res: Response) => {
         delete query.isArchived;
         selectedFields += " isArchived";
     }
-
     if (category) {
         query.category = category;
     }
@@ -34,61 +49,87 @@ export const getCourses = async (req: Request, res: Response) => {
 
     const total = await Course.countDocuments(query);
 
-    res.json({
+    const responsePayload = {
         data: courses,
         total,
         page: Number(page),
         totalPages: Math.ceil(total / Number(limit)),
-    });
+    };
+
+    // Save the fresh MongoDB query payload to Redis
+    try {
+        await redisClient.setEx(cacheKey, CACHE_TTL, JSON.stringify(responsePayload));
+    } catch (err) {
+        logger.error("Redis Write Error:", err);
+    }
+
+    res.json(responsePayload);
 };
 
 export const getCourseById = async (req: AuthRequest, res: Response) => {
     const courseId = req.params.id;
-    const userId = req.query.userId;
-
+    const userId = req.query.userId || "guest";
     const fetchReviews = req.query.fetchReviews === "true";
 
-    const course = await Course.findById(courseId);
+    // Generate key. We track userId in the key because 'hasLiked' status changes per-user.
+    const cacheKey = `course:${courseId}:user=${userId}:reviews=${fetchReviews}`;
 
+    try {
+        const cachedCourse = await redisClient.get(cacheKey);
+        if (cachedCourse) {
+            return res.json(JSON.parse(cachedCourse));
+        }
+    } catch (err) {
+        logger.error("Redis Read Error:", err);
+    }
+
+    // --- DATABASE FALLBACK ---
+    const course = await Course.findById(courseId);
     if (!course) {
         res.status(404);
         throw new Error("Course not found");
     }
 
-    // Convert Mongoose document to a plain JavaScript object 
-    // so we can dynamically attach properties to it safely
     const courseData = course.toObject() as any;
 
-    // CONDITIONAL LOOKUP: Fetch reviews only if the client is a learner
     if (fetchReviews) {
         const reviews = await Review.find({ course: courseId })
             .populate("user", "name")
             .sort({ createdAt: -1 })
-            .lean(); // Converts documents to plain JS objects immediately, shedding Mongoose internals
+            .lean();
 
-        // Transform the clean array
         courseData.reviews = reviews.map(review => ({
             ...review,
-            likes: review.likes?.length || 0, // Sends a pure numerical count to your UI
+            likes: review.likes?.length || 0,
             hasLiked: review.likes?.some((id: any) => id.toString() === String(userId)) || false,
         }));
     } else {
         courseData.reviews = [];
     }
 
-    // Send the unified data object back
-    res.json({
-        data: courseData,
-    });
+    const responsePayload = { data: courseData };
+
+    // Store payload to Redis
+    try {
+        await redisClient.setEx(cacheKey, CACHE_TTL, JSON.stringify(responsePayload));
+    } catch (err) {
+        logger.error("Redis Write Error:", err);
+    }
+
+    res.json(responsePayload);
 };
 
 export const createCourse = async (req: Request, res: Response) => {
     const course = new Course(req.body);
     const saved = await course.save();
 
+    if (saved) {
+        await clearCourseCache(saved._id.toString());
+    }
+
     res.status(201).json(saved);
 
-    // Fire and forget the global notification background pipeline safely
+    // This runs completely in the background without making the admin wait!
     triggerGlobalNotification(
         "New Course Available! 🎓",
         `"${saved.name}" has just been published. Start learning today!`,
@@ -108,8 +149,12 @@ export const updateCourse = async (req: Request, res: Response) => {
     // sub-document IDs for items that match, or creating them for items that are new.
     course.set(req.body);
 
-    // 3. Save the document — this triggers pre-save hooks and nested validations!
+    // Save the document — this triggers pre-save hooks and nested validations!
     const updated = await course.save();
+
+    if (updated) {
+        await clearCourseCache(updated._id.toString());
+    }
 
     res.json(updated);
 };
@@ -126,6 +171,10 @@ export const toggleCourseArchiveStatus = async (req: Request, res: Response) => 
     // Flip the archive boolean flag
     course.isArchived = !course.isArchived;
     await course.save();
+
+    if (course) {
+        await clearCourseCache(course._id.toString());
+    }
 
     res.json({
         success: true,

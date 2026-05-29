@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+import { createServer } from "http";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -19,9 +20,14 @@ import { errorMiddleware } from "./middleware/errorMiddleware";
 import { limiter } from "./middleware/rateLimiter";
 
 import { handleStripeWebhook } from "./controllers/enrollmentController";
-import { createServer } from "http";
+
+import { logger } from "./utils/logger";
 
 const app = express();
+
+// Mount BullMQ Worker on app startup
+import "./workers/notificationWorker";
+logger.info("👷 BullMQ Background Worker initialized and listening...");
 
 app.set("trust proxy", 1);
 
