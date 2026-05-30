@@ -95,7 +95,7 @@ function Courses() {
 
             {/* Bottom Target Trigger & Feedback Indicator Area */}
             <div ref={ref} className="w-full flex justify-center py-8 mt-4">
-                {isFetching && (
+                {isFetching && !isLoading && (
                     <p className="text-sm text-gray-500 animate-pulse font-medium">
                         Loading more courses...
                     </p>

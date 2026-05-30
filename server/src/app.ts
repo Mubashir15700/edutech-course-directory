@@ -14,6 +14,7 @@ import enrollmentRoutes from "./routes/enrollmentRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
 import notificationRoutes from "./routes/notificationRoutes";
+import chatRoutes from "./routes/chatRoutes";
 
 import { notFoundMiddleware } from "./middleware/notFoundMiddleware";
 import { errorMiddleware } from "./middleware/errorMiddleware";
@@ -63,6 +64,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/chat", chatRoutes);
 
 app.get("/", (req, res) => {
     res.status(200).json({

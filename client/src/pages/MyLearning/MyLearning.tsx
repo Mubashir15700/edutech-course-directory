@@ -68,25 +68,41 @@ export default function MyLearning() {
                     </div>
 
                     {/* View Switch Navigation Tabs */}
-                    <div className="flex gap-2 bg-gray-100 p-1.5 rounded-xl border border-gray-200/20 self-stretch sm:self-center">
-                        <button
-                            onClick={() => setActiveTab("courses")}
-                            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${activeTab === "courses" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"}`}
-                        >
-                            My Courses
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("history")}
-                            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${activeTab === "history" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"}`}
-                        >
-                            Purchase History
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("settings")}
-                            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${activeTab === "settings" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"}`}
-                        >
-                            Settings
-                        </button>
+                    <div className="w-full sm:w-auto self-stretch sm:self-center">
+                        {/* Mobile Scrollable Container Wrap Engine */}
+                        <div className="flex gap-2 bg-gray-100 p-1.5 rounded-xl border border-gray-200/50 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
+
+                            <button
+                                onClick={() => setActiveTab("courses")}
+                                className={`px-4 py-2.5 sm:py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap snap-start shrink-0 cursor-pointer ${activeTab === "courses"
+                                    ? "bg-white text-gray-900 shadow-xs"
+                                    : "text-gray-500 hover:text-gray-900 hover:bg-white/40"
+                                    }`}
+                            >
+                                My Courses
+                            </button>
+
+                            <button
+                                onClick={() => setActiveTab("history")}
+                                className={`px-4 py-2.5 sm:py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap snap-start shrink-0 cursor-pointer ${activeTab === "history"
+                                    ? "bg-white text-gray-900 shadow-xs"
+                                    : "text-gray-500 hover:text-gray-900 hover:bg-white/40"
+                                    }`}
+                            >
+                                Purchase History
+                            </button>
+
+                            <button
+                                onClick={() => setActiveTab("settings")}
+                                className={`px-4 py-2.5 sm:py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap snap-start shrink-0 cursor-pointer ${activeTab === "settings"
+                                    ? "bg-white text-gray-900 shadow-xs"
+                                    : "text-gray-500 hover:text-gray-900 hover:bg-white/40"
+                                    }`}
+                            >
+                                Settings
+                            </button>
+
+                        </div>
                     </div>
                 </div>
 

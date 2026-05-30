@@ -5,6 +5,7 @@ import { usersApi } from "../features/users/usersApi";
 import { dashboardApi } from "../features/dashboard/dashboardApi";
 import { authApi } from "../features/auth/authApi";
 import { notificationApi } from "../features/notification/notificationApi";
+import { chatApi } from "../features/chat/chatApi";
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
         [dashboardApi.reducerPath]: dashboardApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
         [notificationApi.reducerPath]: notificationApi.reducer,
+        [chatApi.reducerPath]: chatApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -20,6 +22,7 @@ export const store = configureStore({
             usersApi.middleware,
             dashboardApi.middleware,
             authApi.middleware,
-            notificationApi.middleware
+            notificationApi.middleware,
+            chatApi.middleware
         ),
 });

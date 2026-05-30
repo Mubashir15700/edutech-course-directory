@@ -24,6 +24,7 @@ import AdminRoute from "./AdminRoute";
 
 import AdminLayout from "../layouts/AdminLayout";
 import LearnerLayout from "../layouts/LearnerLayout";
+import AdminChatDashboard from "../components/admin/AdminChatDashboard";
 
 export default function AppRoutes() {
     return (
@@ -79,6 +80,7 @@ export default function AppRoutes() {
                 <Route path="courses" element={<CoursesPage />} />
                 <Route path="learners" element={<LearnersPage />} />
                 <Route path="profile" element={<AdminProfile />} />
+                <Route path="chat" element={<AdminChatDashboard />} />
             </Route>
             <Route
                 path="/admin/add"

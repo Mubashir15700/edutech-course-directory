@@ -1,5 +1,6 @@
 import { Server as HttpServer } from 'http';
 import { Server, Socket } from 'socket.io';
+import { Message } from '../models/Message';
 import { logger } from '../utils/logger';
 
 let io: Server;
@@ -38,6 +39,35 @@ export const initializeSocket = (server: HttpServer) => {
                     activeConnections.delete(userId);
                 }
             }
+        });
+
+        socket.on("join_chat_room", ({ roomId }) => {
+            socket.join(roomId);
+            logger.info(`Socket ${socket.id} joined chat room: ${roomId}`);
+        });
+
+        socket.on("send_message", async ({ roomId, senderId, text }) => {
+            try {
+                const newMessage = await Message.create({
+                    room: roomId,
+                    sender: senderId,
+                    text
+                });
+
+                io.to(roomId).emit("message_received", {
+                    id: newMessage._id,
+                    room: newMessage.room,
+                    sender: newMessage.sender,
+                    text: newMessage.text,
+                    createdAt: newMessage.createdAt
+                });
+            } catch (error) {
+                logger.error("Failed to route socket message:", error);
+            }
+        });
+
+        socket.on("leave_chat_room", ({ roomId }) => {
+            socket.leave(roomId);
         });
     });
 

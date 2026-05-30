@@ -4,10 +4,9 @@ export default function Sidebar() {
     const { pathname } = useLocation();
 
     const linkClass = (path: string) =>
-        `block px-4 py-2 rounded-lg ${
-            pathname === path
-                ? "bg-blue-600 text-white"
-                : "text-gray-700 hover:bg-gray-200"
+        `block px-4 py-2 rounded-lg ${pathname === path
+            ? "bg-blue-600 text-white"
+            : "text-gray-700 hover:bg-gray-200"
         }`;
 
     return (
@@ -31,6 +30,13 @@ export default function Sidebar() {
                     className={linkClass("/admin/learners")}
                 >
                     👨‍🎓 Learners
+                </Link>
+
+                <Link
+                    to="/admin/chat"
+                    className={linkClass("/admin/chat")}
+                >
+                    💬 Chat
                 </Link>
             </nav>
         </div>
