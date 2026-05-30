@@ -36,3 +36,22 @@ export interface IUser {
     enrolledCourses?: CoursesWithProgress[];
     createdAt: string;
 }
+
+export interface PaymentHistory {
+    id: string,
+    courseId: string,
+    courseName: string,
+    thumbnail: string,
+    amountPaid: number,
+    purchaseDate: string,
+    receiptRef: string
+}
+
+export interface AdminPaymentHistory {
+    id: string;
+    courseName: string;
+    category: string;
+    amountPaid: number;
+    purchaseDate: string;
+    stripeRef: string;
+}

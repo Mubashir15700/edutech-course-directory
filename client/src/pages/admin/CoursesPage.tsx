@@ -121,18 +121,24 @@ export default function CoursesPage() {
                     columns={columns}
                     data={sortedCourses}
                     renderActions={(course) => (
-                        <div className="flex justify-end gap-3">
+                        <div className="flex items-center justify-end gap-3 w-full">
+                            {/* Edit Course Route Anchor */}
                             <Link
                                 to={`/admin/edit/${course._id}`}
-                                className="text-blue-600"
+                                className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-100 rounded-lg hover:bg-blue-100 active:bg-blue-200 transition-colors shrink-0"
                             >
-                                Edit
+                                Edit 📝
                             </Link>
+
+                            {/* Archive / Restore Toggle Control */}
                             <button
                                 onClick={() => handleShowConfirmModal(course._id, course.isArchived)}
-                                className="text-red-600"
+                                className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-colors cursor-pointer shrink-0 min-w-[95px] text-center ${course.isArchived
+                                        ? "text-emerald-600 bg-emerald-50 border-emerald-100 hover:bg-emerald-100 active:bg-emerald-200"
+                                        : "text-amber-600 bg-amber-50 border-amber-100 hover:bg-amber-100 active:bg-amber-200"
+                                    }`}
                             >
-                                {isArchiving ? "Toggling..." : course.isArchived ? "Unarchive" : "Archive"}
+                                {course.isArchived ? "Unarchive 🚀" : "Archive 📦"}
                             </button>
                         </div>
                     )}

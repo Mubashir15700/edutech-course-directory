@@ -4,11 +4,12 @@ import MyCourses from "./MyCourses";
 import AccountSettings from "./AccountSettings";
 import BackButton from "../../components/BackButton";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import PurchaseHistory from "./PurchaseHistory";
 
 export default function MyLearning() {
     const { data: user, isLoading } = useGetProfileQuery();
     const [updateProfile] = useUpdateProfileMutation();
-    const [activeTab, setActiveTab] = useState<"courses" | "settings">("courses");
+    const [activeTab, setActiveTab] = useState<"courses" | "history" | "settings">("courses");
     const [newName, setNewName] = useState("");
     const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -75,6 +76,12 @@ export default function MyLearning() {
                             My Courses
                         </button>
                         <button
+                            onClick={() => setActiveTab("history")}
+                            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${activeTab === "history" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"}`}
+                        >
+                            Purchase History
+                        </button>
+                        <button
                             onClick={() => setActiveTab("settings")}
                             className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${activeTab === "settings" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"}`}
                         >
@@ -89,6 +96,8 @@ export default function MyLearning() {
                         user={user}
                         completedCoursesCount={completedCoursesCount}
                     />
+                ) : activeTab === "history" ? (
+                    <PurchaseHistory />
                 ) : (
                     <AccountSettings
                         message={message}

@@ -11,6 +11,7 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import type { ToastType } from "../../components/Toast";
 import Toast from "../../components/Toast";
+import AdminUserBillingModal from "../../components/admin/AdminUserBillingModal";
 
 export default function LearnersPage() {
     const [search, setSearch] = useState("");
@@ -25,6 +26,8 @@ export default function LearnersPage() {
     });
     const [showModal, setShowModal] = useState(false);
     const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
+    const [selectedUser, setSelectedUser] = useState<{ id: string; name: string } | null>(null);
+    const [isBillingOpen, setIsBillingOpen] = useState(false);
 
     const showToast = (message: string, type: ToastType) => {
         setToast({ message, type });
@@ -117,12 +120,30 @@ export default function LearnersPage() {
                     columns={columns}
                     data={sortedLearners}
                     renderActions={(user) => (
-                        <button
-                            onClick={() => handleShowConfirmModal(user._id, user.isActive)}
-                            className="text-red-600"
-                        >
-                            {isDeleting ? "Toggling..." : user.isActive ? "Deactivate" : "Activate"}
-                        </button>
+                        <div className="flex items-center justify-end gap-3 w-full">
+                            {/* Billing Ledger Button */}
+                            <button
+                                onClick={() => {
+                                    setSelectedUser({ id: user._id, name: user.name });
+                                    setIsBillingOpen(true);
+                                }}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-lg hover:bg-indigo-100 active:bg-indigo-200 transition-colors cursor-pointer shrink-0"
+                            >
+                                <span>View Ledger</span>
+                                <span>💳</span>
+                            </button>
+
+                            {/* Status Toggle Button */}
+                            <button
+                                onClick={() => handleShowConfirmModal(user._id, user.isActive)}
+                                className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-colors cursor-pointer shrink-0 min-w-[85px] text-center ${user.isActive
+                                        ? "text-red-600 bg-red-50 border-red-100 hover:bg-red-100 active:bg-red-200"
+                                        : "text-emerald-600 bg-emerald-50 border-emerald-100 hover:bg-emerald-100 active:bg-emerald-200"
+                                    }`}
+                            >
+                                {user.isActive ? "Deactivate" : "Activate"}
+                            </button>
+                        </div>
                     )}
                 />
             </div>
@@ -134,6 +155,18 @@ export default function LearnersPage() {
                 setCurrentPage={setCurrentPage}
                 marginTop="mt-6"
             />
+
+            {selectedUser && (
+                <AdminUserBillingModal
+                    isOpen={isBillingOpen}
+                    onClose={() => {
+                        setIsBillingOpen(false);
+                        setSelectedUser(null);
+                    }}
+                    userId={selectedUser.id}
+                    userName={selectedUser.name}
+                />
+            )}
 
             <ConfirmationModal
                 isOpen={showModal}

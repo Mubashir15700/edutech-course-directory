@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { IUser, UsersResponse } from "./types";
+import type { AdminPaymentHistory, IUser, PaymentHistory, UsersResponse } from "./types";
 
 export const usersApi = createApi({
     reducerPath: "usersApi",
@@ -65,6 +65,20 @@ export const usersApi = createApi({
             invalidatesTags: ["UserProfile"],
         }),
 
+        getPaymentHistory: builder.query<PaymentHistory[], void>({
+            query: () => ({
+                url: "/enrollments/purchase-history",
+                method: "GET",
+            }),
+        }),
+
+        getAdminUserBilling: builder.query<AdminPaymentHistory[], string>({
+            query: (userId) => ({
+                url: `/enrollments/admin/purchase-history/${userId}`,
+                method: "GET",
+            }),
+        }),
+
         completeLesson: builder.mutation<void, { courseId: string; lessonId: string }>({
             query: ({ courseId, lessonId }) => ({
                 url: `/users/courses/complete-lesson`,
@@ -78,4 +92,14 @@ export const usersApi = createApi({
     }),
 });
 
-export const { useGetLearnersQuery, useToggleUserStatusMutation, useGetProfileQuery, useUpdateProfileMutation, useCreateCheckoutSessionMutation, useVerifyStripeSessionMutation, useCompleteLessonMutation } = usersApi;
+export const {
+    useGetLearnersQuery,
+    useToggleUserStatusMutation,
+    useGetProfileQuery,
+    useUpdateProfileMutation,
+    useCreateCheckoutSessionMutation,
+    useVerifyStripeSessionMutation,
+    useGetPaymentHistoryQuery,
+    useGetAdminUserBillingQuery,
+    useCompleteLessonMutation
+} = usersApi;

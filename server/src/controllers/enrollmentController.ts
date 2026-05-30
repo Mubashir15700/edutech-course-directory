@@ -138,3 +138,53 @@ export const verifySession = async (req: Request, res: Response) => {
 
     return res.status(200).json({ success: true, enrollment });
 };
+
+export const getLearnerPurchaseHistory = async (req: AuthRequest, res: Response) => {
+    const userId = req.user._id;
+
+    const purchases = await Enrollment.find({
+        user: userId,
+        status: "completed"
+    })
+        .populate("course", "name thumbnail price")
+        .sort({ createdAt: -1 })
+        .lean();
+
+    const purchaseHistory = purchases.map((enrollment: any) => ({
+        id: enrollment._id,
+        courseId: enrollment.course?._id || null,
+        courseName: enrollment.course?.name || "Unknown Course",
+        thumbnail: enrollment.course?.thumbnail || "",
+        amountPaid: enrollment.amountPaid,
+        purchaseDate: enrollment.createdAt,
+        receiptRef: enrollment.paymentId || "N/A"
+    }));
+
+    res.status(200).json(purchaseHistory);
+};
+
+export const getAdminUserPurchaseHistory = async (req: any, res: Response) => {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId).select("name email role").lean();
+    if (!user) {
+        res.status(404);
+        throw new Error("Targeted user not found");
+    }
+
+    const logs = await Enrollment.find({ user: userId, status: "completed" })
+        .populate("course", "name price category")
+        .sort({ createdAt: -1 })
+        .lean();
+
+    const transactions = logs.map((log: any) => ({
+        id: log._id,
+        courseName: log.course?.name || "Deleted Course",
+        category: log.course?.category || "N/A",
+        amountPaid: log.amountPaid,
+        purchaseDate: log.createdAt,
+        stripeRef: log.paymentId || "Manual/Free"
+    }));
+
+    res.status(200).json(transactions);
+};
