@@ -26,9 +26,10 @@ import { logger } from "./utils/logger";
 
 const app = express();
 
-// Mount BullMQ Worker on app startup
+// Mount BullMQ Workers on app startup
 import "./workers/notificationWorker";
-logger.info("👷 BullMQ Background Worker initialized and listening...");
+import "./workers/emailWorker";
+logger.info("👷 BullMQ Background Workers initialized and listening...");
 
 app.set("trust proxy", 1);
 

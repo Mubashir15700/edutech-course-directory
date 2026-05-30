@@ -3,6 +3,7 @@ import Course from "../models/Course";
 import Review from "../models/Review";
 import { AuthRequest } from "../middleware/authMiddleware";
 import { redisClient } from "../config/redis";
+import { emailQueue } from "../queues/emailQueue";
 import { triggerGlobalNotification } from "../utils/notify";
 import { clearCourseCache } from "../utils/cacheInvalidator";
 import { logger } from "../utils/logger";
@@ -134,6 +135,19 @@ export const createCourse = async (req: Request, res: Response) => {
         "New Course Available! 🎓",
         `"${saved.name}" has just been published. Start learning today!`,
         "course"
+    );
+
+    // Offload the massive email blast to Redis/BullMQ safely
+    await emailQueue.add(
+        `blast_course_${saved._id}`,
+        {
+            courseName: saved.name,
+            courseId: saved._id.toString()
+        },
+        {
+            attempts: 3, // Automatically retry 3 times if the job fails
+            backoff: { type: "exponential", delay: 5000 } // Wait 5s, then 10s...
+        }
     );
 };
 

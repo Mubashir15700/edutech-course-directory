@@ -36,14 +36,12 @@ const Filters = ({
                     className="border border-gray-300 p-2 rounded-lg w-full md:w-56 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
                     <option value="">All Categories</option>
-                    <option value="Frontend">Frontend</option>
-                    <option value="Backend">Backend</option>
-                    <option value="Database">Database</option>
-                    <option value="Fullstack">Fullstack</option>
+                    <option value={"Web Development"}>Web Development</option>
+                    <option value="Mobile Apps">Mobile Apps</option>
                     <option value="Design">Design</option>
                     <option value="DevOps">DevOps</option>
-                    <option value="Cloud">Cloud</option>
-                    <option value="Architecture">Architecture</option>
+                    <option value="Cybersecurity">Cybersecurity</option>
+                    <option value="Data Science">Data Science</option>
                 </select>
             )}
 

@@ -1,20 +1,33 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import User from "../models/User";
 import { Message } from "../models/Message";
 import { AuthRequest } from "../middleware/authMiddleware";
 
 export const getChatHistory = async (req: AuthRequest, res: Response) => {
-    // Learners fetch their own room, Admins pass it via params
     const roomId = req.user.role === "admin" ? req.params.roomId : req.user._id;
 
-    const messages = await Message.find({ room: roomId })
-        .sort({ createdAt: 1 }) // Order by oldest to newest for classic chat flows
+    // Get the timestamp cursor from query params (e.g., ?before=2026-05-30T12:00:00.000Z)
+    const { before } = req.query;
+    const limit = parseInt(req.query.limit as string) || 20;
+
+    // Build the query object
+    const query: any = { room: roomId };
+
+    // If a cursor is provided, only fetch messages older than that cursor
+    if (before) {
+        query.createdAt = { $lt: new Date(before as string) };
+    }
+
+    const messages = await Message.find(query)
+        .sort({ createdAt: -1 })
+        .limit(limit)
         .lean();
 
-    res.status(200).json(messages);
+    // Reverse them to chronological order (oldest to newest) for the frontend array
+    res.status(200).json(messages.reverse());
 };
 
-export const getAdminActiveChats = async (req: any, res: Response) => {
+export const getAdminActiveChats = async (req: Request, res: Response) => {
     // Group messages by unique room (learner ID) and grab the newest entry date
     const activeRooms = await Message.aggregate([
         { $sort: { createdAt: -1 } },

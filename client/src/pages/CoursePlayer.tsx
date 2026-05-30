@@ -2,8 +2,7 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useGetProfileQuery, useCompleteLessonMutation } from "../features/users/usersApi";
 import LoadingSpinner from "../components/LoadingSpinner";
-import type { ToastType } from "../components/Toast";
-import Toast from "../components/Toast";
+import Toast, { type ToastType } from "../components/Toast";
 
 export default function CoursePlayer() {
     const { id: courseId } = useParams();

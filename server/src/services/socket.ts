@@ -41,6 +41,12 @@ export const initializeSocket = (server: HttpServer) => {
             }
         });
 
+        // Admins join this global room upon opening their chat dashboard
+        socket.on("join_admin_global", () => {
+            socket.join("admin_global_room");
+            logger.info(`Admin socket ${socket.id} joined the global admin tracking channel`);
+        });
+
         socket.on("join_chat_room", ({ roomId }) => {
             socket.join(roomId);
             logger.info(`Socket ${socket.id} joined chat room: ${roomId}`);
@@ -48,19 +54,32 @@ export const initializeSocket = (server: HttpServer) => {
 
         socket.on("send_message", async ({ roomId, senderId, text }) => {
             try {
+                const isNewRoom = (await Message.countDocuments({ room: roomId })) === 0;
+
                 const newMessage = await Message.create({
                     room: roomId,
                     sender: senderId,
                     text
                 });
 
-                io.to(roomId).emit("message_received", {
+                const messagePayload = {
                     id: newMessage._id,
                     room: newMessage.room,
                     sender: newMessage.sender,
                     text: newMessage.text,
                     createdAt: newMessage.createdAt
-                });
+                };
+
+                io.to(roomId).emit("message_received", messagePayload);
+
+                // If it's a new room, alert ALL admins so they can add the user to their left sidebar
+                if (isNewRoom) {
+                    io.to("admin_global_room").emit("new_room_created", {
+                        roomId,
+                        lastMessage: text,
+                        lastMessageAt: newMessage.createdAt
+                    });
+                }
             } catch (error) {
                 logger.error("Failed to route socket message:", error);
             }

@@ -11,8 +11,11 @@ export const chatApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        getChatHistory: builder.query<any[], string | void>({
-            query: (roomId) => `/chat/history${roomId ? `/${roomId}` : ""}`,
+        getChatHistory: builder.query<any[], { roomId: string; before?: string }>({
+            query: ({ roomId, before }) => ({
+                url: `/chat/history${roomId ? `/${roomId}` : ""}`,
+                params: before ? { before } : {},
+            }),
         }),
 
         getAdminActiveChats: builder.query<any[], void>({
@@ -21,4 +24,4 @@ export const chatApi = createApi({
     }),
 });
 
-export const { useGetChatHistoryQuery, useGetAdminActiveChatsQuery } = chatApi;
+export const { useLazyGetChatHistoryQuery, useGetAdminActiveChatsQuery } = chatApi;

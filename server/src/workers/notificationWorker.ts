@@ -1,16 +1,10 @@
 import { Worker, Job } from "bullmq";
-import IORedis from "ioredis";
+import { sharedBullMqConnection } from "../config/redis";
 import { NOTIFICATION_QUEUE_NAME } from "../queues/notificationQueue";
 import { emitToAll, emitToUser } from "../services/socket";
 import { Notification } from "../models/Notification";
 import User from "../models/User";
 import { logger } from "../utils/logger";
-
-const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
-
-const workerRedisConnection = new IORedis(redisUrl, {
-    maxRetriesPerRequest: null,
-});
 
 const notificationWorker = new Worker(
     NOTIFICATION_QUEUE_NAME,
@@ -70,7 +64,7 @@ const notificationWorker = new Worker(
         }
     },
     {
-        connection: workerRedisConnection,
+        connection: sharedBullMqConnection,
         concurrency: 2 // Process up to 2 heavy notification loops concurrently 
     }
 );
