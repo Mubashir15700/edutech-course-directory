@@ -118,7 +118,7 @@ export default function AdminUserBillingModal({
                         </div>
 
                         {/* Reused Generic Custom Table Component */}
-                        <div className="max-h-[350px] overflow-y-auto rounded-xl border border-gray-150">
+                        <div className="max-h-[550px] overflow-y-auto rounded-xl border border-gray-150">
                             <Table columns={columns} data={history} />
                         </div>
                     </>

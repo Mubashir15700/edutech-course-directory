@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import BackButton from "../../components/BackButton";
 
 interface LocalUser {
     _id?: string;
@@ -63,11 +64,15 @@ export default function AdminProfile() {
 
     return (
         <div className="h-[80vh] max-h-[80vh] overflow-y-auto pr-2">
-
             {/* Header Title block */}
-            <div className="mb-6">
-                <h1 className="text-2xl font-black text-gray-900">Account Settings</h1>
-                <p className="text-sm text-gray-500 mt-1">Manage your administrative profile and platform access security controls.</p>
+            <div className="mb-6 flex">
+                <div className="max-w-20 border border-solid border-gray-300 rounded-lg mr-5 pr-1">
+                    <BackButton goTo="/admin" text="Back" />
+                </div>
+                <div>
+                    <h1 className="text-2xl font-black text-gray-900">Account Settings</h1>
+                    <p className="text-sm text-gray-500 mt-1">Manage your administrative profile and platform access security controls.</p>
+                </div>
             </div>
 
             {/* Main Split Layout Grid */}
