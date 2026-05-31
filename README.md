@@ -20,7 +20,8 @@ https://edutech-course-directory-api.onrender.com
 - **Secure Authentication:** Identity protection powered by JWT and structured local persistence.
 - **Advanced Course Discovery:** Real-time search by keywords, category filtering, structural pagination, and sorting by name or creation date.
 - **💳 Seamless Stripe Checkout:** Integrated server-side billing workflows managing secure token handshakes, card authorization, and automated enrollment lifecycle completion.
-- **⚡ Real-Time Notification Hub:** High-performance, low-latency notification drawer showing dynamic unread indicator alerts powered by **Socket.io**.
+- **⚡ Real-Time Support Desk:** Interactive, slide-out chat workspace with cursor-based pagination (before timestamp mapping) for endless scroll-up historical tracking without message duplication.
+- **📥 Dual-Channel Notifications:** Live in-app alert drawers powered by Socket.io backed by transactional email dispatches for offline users.
 - **Interactive Review Ecosystem:** Pinned user reviews with full inline **CRUD lifecycle** (Create, Read, Update, Delete) without page reloads.
 - **Dynamic Metrics Breakdown:** Live calculations showing percentage star breakdowns and helpfulness upvote counters (`likes`).
 - **Student Dashboard:** Custom, personalized workspace routes (`/dashboard`) managing enrollment records, system history, and profile configurations.
@@ -32,6 +33,7 @@ https://edutech-course-directory-api.onrender.com
 - **User Auditing:** Dedicated directory tables listing learners with administrative protection middleware routes.
 
 ### 🧠 Backend Core & Security
+- **Distributed Task Queueing:** High-performance background task execution managed by BullMQ and IORedis to handle heavy workloads asynchronously without blocking the primary HTTP thread.
 - **Bi-Directional Event Pipes:** Centralized Socket.io instance initialized as a state-aware singleton to optimize system connections across active web threads.
 - **💾 Automated Document Expiration (TTL):** Native MongoDB Time-To-Live index tracking that sweeps and purges transient notification documents after 7 days to minimize storage footprint.
 - **Type-Safe Architecture:** Native TypeScript end-to-end integration across routes, schemas, and queries.
@@ -47,6 +49,9 @@ https://edutech-course-directory-api.onrender.com
 | :--- | :--- |
 | **Frontend** | React (Vite), TypeScript, Redux Toolkit, RTK Query, Socket.io-client, React Router DOM, Tailwind CSS |
 | **Backend** | Node.js, Express.js, TypeScript, Socket.io (WebSockets), REST API Architecture, Zod Validation |
+| **Asynchronous Task Queue** |	BullMQ, IORedis (Connection Pool Router) |
+| **Caching & In-Memory Store** | Redis via official Node-Redis driver (redis) |
+| **Transactional Email Engine** | Nodemailer (SMTP Transport Ecosystem) |
 | **Payment Gateway** | Stripe API Core Ecosystem |
 | **Database** | MongoDB Atlas, Mongoose ODM (TTL Index-enabled) |
 | **Tooling** | Git, dotenv, ts-node, Morgan Logging |
@@ -75,7 +80,7 @@ edutech-course-directory/
 ## Courses API
 - **Fetch All Courses:** Open catalog streaming with structured pagination support.
 - **Advanced Querying:** Server-side search filtering by text tokens, categories, and creation dates.
-- **Admin Management:** Secured endpoints for creating, updating, and completely archiving catalog listings.
+- **Admin Management:** Secured endpoints for creating, updating, and archiving catalog listings. Automatically clears corresponding Redis caches and dispatches automated asynchronous BullMQ background tasks for email and notification blasts.
 
 ---
 
@@ -83,6 +88,13 @@ edutech-course-directory/
 - **Register User:** Secure enrollment pipeline with automated initial role classification (`learner`).
 - **Login User:** Credentials verification returning structured payload tokens.
 - **JWT Token Generation:** Stateless identity protection verification attached to incoming header interceptors.
+
+---
+
+## Chat & Support API (REST & WebSockets)
+- **Fetch Chat History:** Optimized cursor-based pagination tracking (?before=timestamp) ensuring seamless, duplicate-free scroll-up message rendering.
+- **Admin Active Chats Grid:** High-performance database aggregation query restricted to recent message windows (30 days) to populate active support queues with learner profile details.
+- **Double-Pane Socket.io Engine:** Bi-directional event streams allowing admins to attach to custom student channels, manage outward replies, and connect to a global admin broker room ("admin_global_room") that catches new customer inquiries instantly.
 
 ---
 
@@ -108,6 +120,7 @@ edutech-course-directory/
 
 # 🎯 Key Decisions & Architecture Strategy
 
+- **Distributed Task Queueing with BullMQ & Redis:** Chose to offload high-latency processing tasks (like bulk email distributions and cross-system notification blasts) out of the main HTTP request-response cycle. Utilizing BullMQ backed by an isolated ioredis layer guarantees that administrative operations remain lightning-fast while automated backoffs and multi-attempt retries handle underlying mail server rate limits gracefully.
 - **State Management & Caching with RTK Query:** Leveraged Redux Toolkit Query to abstract API data fetching, implementing automated cache invalidation (`tagTypes`) to keep server and client states synchronized without redundant network overhead.
 - **WebSocket Synchronization over HTTP Polling:** Chose a persistent Socket.io configuration to drive notifications. Connecting client-side caches directly to incoming WebSocket streams via RTK Query's `onCacheEntryAdded` hook ensures real-time updates without forcing heavy page re-renders.
 - **Asynchronous Webhook Processing for Transactions:** Decoupled the Stripe checkout pipeline from the main thread. Payment processing and user enrollment modifications execute out-of-band via secure transaction hooks, ensuring administrative UI response times stay under 200ms.
@@ -172,7 +185,6 @@ npm run dev
 
 # 📸 Future Improvements
 
-- 📧 Email notifications
 - 🎥 Video course support
 - 📱 Fully responsive admin dashboard
 

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import { createCourseSchema } from "../../../validations/courseValidation";
 import { useGetCourseByIdQuery } from "../../../features/courses/coursesApi";
 import type { Course } from "../../../features/courses/types";
@@ -20,6 +21,8 @@ export default function CourseForm({
     isLoading,
     title,
 }: CourseFormProps) {
+    const videoInputRef = useRef<HTMLInputElement>(null);
+
     // If 'id' is empty or missing, RTK Query will skip the network request entirely
     const { data: course, isLoading: isCourseLoading, error } = useGetCourseByIdQuery({ id: initialData?._id || "" }, {
         skip: !initialData?._id,
@@ -27,6 +30,9 @@ export default function CourseForm({
 
     const [form, setForm] = useState<CourseFormState>(initialFormState);
     const [tagInput, setTagInput] = useState("");
+    // States for video processing loaders
+    const [isUploadingVideo, setIsUploadingVideo] = useState(false);
+    const [videoProgress, setVideoProgress] = useState(0);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     // Dynamic state for adding a single lesson to the array
     const [currentLesson, setCurrentLesson] = useState<LessonInput>(emptyLesson);
@@ -55,6 +61,12 @@ export default function CourseForm({
         setForm({ ...form, tags: form.tags.filter((_, i) => i !== indexToRemove) });
     };
 
+    const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setForm({ ...form, thumbnail: e.target.files[0] as any }); // Save the binary File object directly
+        }
+    };
+
     const handleAddLesson = () => {
         if (!currentLesson.title || !currentLesson.duration) {
             setErrors(prev => ({ ...prev, lessons: "Lesson Title and Duration are required." }));
@@ -70,6 +82,48 @@ export default function CourseForm({
 
     const handleRemoveLesson = (indexToRemove: number) => {
         setForm({ ...form, lessons: form.lessons.filter((_, i) => i !== indexToRemove) });
+    };
+
+    const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append("video", file); // Must match backend uploadVideo.single("video")
+
+        try {
+            setIsUploadingVideo(true);
+            setVideoProgress(10);
+
+            const response = await axios.post(import.meta.env.VITE_BACKEND_URL + "/uploads/video", formData, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 100));
+                    setVideoProgress(percent);
+                }
+            });
+
+            // Save the clean returned Cloudinary URL string straight into the current lesson template
+            setCurrentLesson({ ...currentLesson, videoUrl: response.data.videoUrl });
+        } catch (error) {
+            setErrors({
+                ...errors,
+                videoUrl: "Failed to upload the video file to the asset cloud library."
+            });
+
+            // Wipe the selected file path value clean out of DOM memory 
+            if (videoInputRef.current) {
+                videoInputRef.current.value = "";
+            }
+
+            // Reset the state string value just in case partial text was injected
+            setCurrentLesson({ ...currentLesson, videoUrl: "" });
+        } finally {
+            setIsUploadingVideo(false);
+            setVideoProgress(0);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -195,15 +249,22 @@ export default function CourseForm({
                             {errors.price && <p className="text-red-600 text-xs mt-1">{errors.price}</p>}
                         </div>
 
+                        {/* URL String input transformed into binary multi-part File Selector */}
                         <div className="flex flex-col gap-1 md:col-span-2">
-                            <label className="text-sm font-semibold text-gray-700">Thumbnail URL</label>
-                            <input
-                                type="url"
-                                placeholder="https://images.unsplash.com..."
-                                value={form.thumbnail}
-                                className="border p-3 rounded-lg focus:outline-blue-500"
-                                onChange={(e) => setForm({ ...form, thumbnail: e.target.value })}
-                            />
+                            <label className="text-sm font-semibold text-gray-700">Course Thumbnail Image</label>
+                            <div className="border p-2 rounded-lg bg-white flex items-center gap-3">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer flex-1 w-full"
+                                    onChange={handleThumbnailChange}
+                                />
+                                {form.thumbnail && typeof form.thumbnail !== "string" && (
+                                    <span className="text-[11px] bg-blue-50 text-blue-600 font-medium px-2 py-1 rounded truncate max-w-[180px]">
+                                        📁 {(form.thumbnail as any).name}
+                                    </span>
+                                )}
+                            </div>
                             {errors.thumbnail && <p className="text-red-600 text-xs mt-1">{errors.thumbnail}</p>}
                         </div>
                     </div>
@@ -250,22 +311,45 @@ export default function CourseForm({
                             />
                         </div>
 
-                        <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
-                            <input
-                                placeholder="Video Streaming URL (Optional)"
-                                value={currentLesson.videoUrl}
-                                className="border p-2 rounded-lg text-sm bg-white flex-1 w-full"
-                                onChange={(e) => setCurrentLesson({ ...currentLesson, videoUrl: e.target.value })}
-                            />
-                            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none self-start md:self-auto">
-                                <input
-                                    type="checkbox"
-                                    checked={currentLesson.isFreePreview}
-                                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
-                                    onChange={(e) => setCurrentLesson({ ...currentLesson, isFreePreview: e.target.checked })}
-                                />
-                                Free Preview Video
-                            </label>
+                        {/* Single video tracking handler instead of typing arbitrary streaming strings */}
+                        <div className="flex flex-col gap-2">
+                            <div className="flex flex-col md:flex-row gap-3 items-center justify-between w-full">
+                                <div className="flex-1 w-full border p-1.5 rounded-lg bg-white flex items-center gap-3">
+                                    <input
+                                        type="file"
+                                        ref={videoInputRef}
+                                        accept="video/mp4,video/mkv,video/quicktime"
+                                        disabled={isUploadingVideo}
+                                        className="text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer disabled:opacity-50 flex-1 w-full"
+                                        onChange={handleVideoUpload}
+                                    />
+                                    {currentLesson.videoUrl && (
+                                        <span className="text-[10px] bg-green-50 text-green-700 font-bold px-2 py-1 rounded truncate max-w-[220px]">
+                                            🎥 Asset Cloud Linked
+                                        </span>
+                                    )}
+                                </div>
+
+                                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none self-start md:self-auto shrink-0">
+                                    <input
+                                        type="checkbox"
+                                        checked={currentLesson.isFreePreview}
+                                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
+                                        onChange={(e) => setCurrentLesson({ ...currentLesson, isFreePreview: e.target.checked })}
+                                    />
+                                    Free Preview Video
+                                </label>
+                            </div>
+
+                            {errors.videoUrl && <p className="text-red-600 text-xs mt-1">{errors.videoUrl}</p>}
+
+                            {/* ⏳ Async Loading Progress UI Bar */}
+                            {isUploadingVideo && (
+                                <div className="w-full bg-gray-200 h-1.5 rounded-full mt-1 overflow-hidden">
+                                    <div className="bg-blue-600 h-1.5 transition-all duration-300" style={{ width: `${videoProgress}%` }}></div>
+                                    <p className="text-[11px] text-blue-600 font-semibold mt-1">Encoding and uploading video stream asset: {videoProgress}%</p>
+                                </div>
+                            )}
                         </div>
 
                         <button
@@ -296,7 +380,7 @@ export default function CourseForm({
 
                     {/* Final Form Execution Trigger */}
                     <button
-                        disabled={isLoading}
+                        disabled={isLoading || isUploadingVideo}
                         className="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold text-md shadow transition-colors disabled:bg-blue-300 mt-2"
                     >
                         {isLoading ? "Saving changes..." : "Submit Course"}

@@ -3,7 +3,6 @@ import User from "../models/User";
 import { logger } from "../utils/logger";
 
 export const trackUserActivity = async (req: Request, res: Response, next: NextFunction) => {
-    // Check if auth middleware has attached the authenticated user to the request object
     const authenticatedUser = (req as any).user;
 
     if (authenticatedUser && authenticatedUser._id) {

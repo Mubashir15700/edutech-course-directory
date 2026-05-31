@@ -8,6 +8,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 
 import courseRoutes from "./routes/courseRoutes";
+import uploadRoutes from "./routes/uploadRoutes";
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
 import enrollmentRoutes from "./routes/enrollmentRoutes";
@@ -61,6 +62,7 @@ if (process.env.NODE_ENV === "development") {
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
+app.use("/api/uploads", uploadRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/reviews", reviewRoutes);

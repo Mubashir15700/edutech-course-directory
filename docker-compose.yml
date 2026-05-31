@@ -1,10 +1,19 @@
 version: '3.8'
 
 services:
-  backend-redis:
+  redis:
     image: redis:7-alpine
+    container_name: redis_server
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
     networks:
       - edutech-network
 
@@ -16,13 +25,16 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - backend-redis
+      redis:
+        condition: service_healthy
     env_file:
       - ./server/.env
     volumes:
       - ./server:/app
       - /app/node_modules
     restart: unless-stopped
+    networks:
+      - edutech-network
 
   frontend:
     build:
@@ -38,6 +50,11 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+    networks:
+      - edutech-network
+
+volumes:
+  redis_data:
 
 networks:
   edutech-network:

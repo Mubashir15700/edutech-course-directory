@@ -23,11 +23,12 @@ export default function Landing() {
                         EduTech Course Directory
                     </h3>
                     <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-5 leading-tight my-8">
-                        Elevate Your Learning Journey 🚀
+                        Find the Right Course for Your Tech Career 🚀
                     </h1>
                     <p className="text-lg text-gray-600 mb-8 leading-relaxed my-10">
-                        Discover industry-focused courses, learn from expert instructors,
-                        and build real-world skills to advance your tech career.
+                        Explore curated technology courses across multiple domains,
+                        compare options, and discover learning opportunities that
+                        match your goals and interests.
                     </p>
 
                     <div className="flex justify-center gap-4 flex-wrap mt-16">
@@ -85,7 +86,7 @@ export default function Landing() {
 
             {/* FOOTER NOTE */}
             <footer className="text-center py-8 text-sm text-gray-400 border-t border-gray-100">
-                <p>Join learners building the future with modern tech skills</p>
+                <p>Helping learners discover quality technology education</p>
             </footer>
 
         </div>
