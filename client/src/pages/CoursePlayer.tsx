@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useGetProfileQuery, useCompleteLessonMutation } from "../features/users/usersApi";
+import { LessonQuiz } from "../components/LessonQuiz";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Toast, { type ToastType } from "../components/Toast";
 
@@ -130,6 +131,13 @@ export default function CoursePlayer() {
                                 <h1 className="text-base font-bold tracking-tight text-white sm:text-xl lg:text-2xl mt-1.5 line-clamp-2">
                                     {activeLesson.title}
                                 </h1>
+                            </div>
+
+                            <div className="grid grid-cols-1 w-full">
+                                <div className="mt-7">
+                                    {/* New interactive AI companion */}
+                                    <LessonQuiz courseId={courseId} lessonId={activeLesson._id} />
+                                </div>
                             </div>
                         </div>
                     ) : (

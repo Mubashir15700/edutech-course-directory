@@ -6,6 +6,7 @@ import {
     updateCourse,
     toggleCourseArchiveStatus,
 } from "../controllers/courseController";
+import { generateLessonQuiz } from "../controllers/aiController";
 import { adminOnly, protect } from "../middleware/authMiddleware";
 import { validate } from "../middleware/validate";
 import { trackUserActivity } from "../middleware/activityMiddleware";
@@ -54,5 +55,6 @@ router.put(
     asyncHandler(updateCourse)
 );
 router.patch("/:id", protect, adminOnly, asyncHandler(toggleCourseArchiveStatus));
+router.post("/:courseId/lessons/:lessonId/quiz", protect, generateLessonQuiz);
 
 export default router;
