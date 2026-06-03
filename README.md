@@ -1,6 +1,6 @@
 # 📚 EduTech Course Directory
 
-A robust, full-stack educational ecosystem built using the MERN stack and TypeScript. This platform empowers learners to discover courses, securely purchase and enroll in programs, and receive instant updates, while providing administrators with an analytical management dashboard to handle platform growth.
+A robust, type-safe, full-stack educational ecosystem built using **React**, **TypeScript**, and **Node.js**. This platform features complex server-state management, an advanced elastic search discovery layout, secure payment gateways, and **automated AI assessment systems** designed to optimize learner retention and administrative velocity.
 
 ---
 
@@ -11,6 +11,16 @@ https://edutech-course-directory-three.vercel.app/
 
 ### ⚙️ Backend API
 https://edutech-course-directory-api.onrender.com
+
+---
+
+### 🧠 Modern AI Integration Architecture
+
+The platform uses a decoupled, serverless AI integration strategy designed to keep client bundles thin while ensuring predictable backend response formats:
+
+* **Automated Lesson Evaluation Engine:** Integrates the official `@google/genai` SDK on the Express backend, linking course metadata matrices directly to **Gemini 2.5 Flash**.
+* **Strict Schema Contracts:** Leverages Google's `responseMimeType: "application/json"` parameters to ensure the inference engine outputs perfect mathematical JSON quiz payloads, completely eliminating unstructured text extraction errors.
+* **Interactive UI Streaming:** Implements a stateful, gamified client workspace using Tailwind CSS that parses AI structures on the fly, offering instant feedback, retrieval scores, and conceptual explanations directly alongside video playback streams.
 
 ---
 
@@ -51,6 +61,7 @@ https://edutech-course-directory-api.onrender.com
 | **Backend** | Node.js, Express.js, TypeScript, Socket.io (WebSockets), REST API Architecture, Zod Validation |
 | **Asynchronous Task Queue** |	BullMQ, IORedis (Connection Pool Router) |
 | **Caching & In-Memory Store** | Redis via official Node-Redis driver (redis) |
+| **Inference Integration** | Official `@google/genai` SDK (Gemini 2.5 Flash) |
 | **Transactional Email Engine** | Nodemailer (SMTP Transport Ecosystem) |
 | **Payment Gateway** | Stripe API Core Ecosystem |
 | **Database** | MongoDB Atlas, Mongoose ODM (TTL Index-enabled) |

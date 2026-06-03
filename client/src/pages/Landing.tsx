@@ -22,16 +22,23 @@ export default function Landing() {
                     <h3 className="text-2xl text-blue-600 font-semibold tracking-wide mb-3">
                         EduTech Course Directory
                     </h3>
+
                     <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-5 leading-tight my-8">
-                        Find the Right Course for Your Tech Career 🚀
+                        Find the Right Course for Your <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Tech Career</span> 🚀
                     </h1>
-                    <p className="text-lg text-gray-600 mb-8 leading-relaxed my-10">
-                        Explore curated technology courses across multiple domains,
-                        compare options, and discover learning opportunities that
-                        match your goals and interests.
+
+                    <p className="text-base md:text-lg text-gray-600 max-w-2xl mb-10 leading-relaxed">
+                        Explore curated technology courses across multiple domains, test your raw skills with
+                        <span className="font-semibold text-gray-900"> interactive AI micro-quizzes</span>, and discover career paths that match your exact goals.
                     </p>
 
-                    <div className="flex justify-center gap-4 flex-wrap mt-16">
+                    {/* Animated AI Feature Badge */}
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 font-medium text-xs my-6 animate-pulse">
+                        <span className="flex h-2 w-2 rounded-full bg-blue-600"></span>
+                        🤖 Now Powered by Gemini 2.5 Flash AI
+                    </div>
+
+                    <div className="flex justify-center gap-4 flex-wrap mt-10">
                         <Link
                             to="/courses"
                             className="px-6 py-3 bg-blue-600 text-white rounded-xl font-medium shadow-md hover:bg-blue-700 transition duration-300"
