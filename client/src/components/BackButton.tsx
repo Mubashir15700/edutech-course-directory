@@ -15,4 +15,4 @@ const BackButton = ({ goTo, text = "Back to Course Directory" }: BackButtonProps
     )
 }
 
-export default BackButton
+export default BackButton;

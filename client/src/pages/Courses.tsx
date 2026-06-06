@@ -3,7 +3,7 @@ import { useInView } from "react-intersection-observer";
 import { useGetInfiniteCoursesQuery } from "../features/courses/coursesApi";
 import CourseCard from "../components/CourseCard";
 import Filters from "../components/Filters";
-import LoadingSpinner from "../components/LoadingSpinner";
+import SkeletonCard from "../components/SkeletonCard";
 
 function Courses() {
     const [search, setSearch] = useState("");
@@ -55,13 +55,18 @@ function Courses() {
     }, [search, category, tag, sort]);
 
     return (
-        <div className="max-w-6xl mx-auto">
-            {/* Title */}
-            <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
-                EduTech Course Directory
-            </h1>
+        <div className="max-w-6xl mx-auto py-2">
+            {/* Title Section */}
+            <div className="text-center mb-10">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
+                    EduTech Course Directory
+                </h1>
+                <p className="text-sm text-gray-500 max-w-md mx-auto">
+                    Advance your engineering stack parameter skills with interactive evaluation checkpoints.
+                </p>
+            </div>
 
-            {/* Filters */}
+            {/* Filters Component Hook */}
             <Filters
                 search={search}
                 setSearch={setSearch}
@@ -71,42 +76,44 @@ function Courses() {
                 setSort={setSort}
             />
 
-            {/* Course List */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px] items-start">
+            {/* Upgraded Course Grid List Layout */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px] items-start mt-8">
                 {isLoading ? (
-                    <div className="flex justify-center items-center h-full col-span-full">
-                        <LoadingSpinner />
-                    </div>
+                    Array.from({ length: 6 }).map((_, idx) => <SkeletonCard key={idx} />)
                 ) : error ? (
-                    <div className="flex justify-center items-center h-full col-span-full">
-                        <p className="text-red-500 text-lg">
-                            Error loading courses
-                        </p>
+                    <div className="flex flex-col justify-center items-center py-16 col-span-full text-center">
+                        <span className="text-3xl mb-2">⚠️</span>
+                        <p className="text-red-500 font-medium text-base">Error loading available course catalog profiles.</p>
+                        <p className="text-xs text-gray-400 mt-1">Please check your system connection boundaries and refresh.</p>
                     </div>
                 ) : sortedCourses.length > 0 ? (
                     sortedCourses.map((course) => (
                         <CourseCard key={course._id} course={course} />
                     ))
                 ) : (
-                    <div className="flex justify-center items-center h-full col-span-full">
-                        <p className="text-gray-500 text-lg">
-                            No courses match your filters
-                        </p>
+                    <div className="flex flex-col justify-center items-center py-20 col-span-full text-center bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
+                        <span className="text-2xl mb-2">🔍</span>
+                        <p className="text-gray-600 font-medium text-sm">No courses match your active search filters.</p>
+                        <p className="text-xs text-gray-400 mt-0.5">Try resetting your category parameters or checking typos.</p>
                     </div>
                 )}
             </div>
 
             {/* Bottom Target Trigger & Feedback Indicator Area */}
-            <div ref={ref} className="w-full flex justify-center py-8 mt-4">
+            <div ref={ref} className="w-full flex justify-center py-12 mt-6">
                 {isFetching && !isLoading && (
-                    <p className="text-sm text-gray-500 animate-pulse font-medium">
-                        Loading more courses...
-                    </p>
+                    <div className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-full text-xs font-semibold tracking-wide shadow-sm animate-bounce">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping"></span>
+                        Fetching fresh streams...
+                    </div>
                 )}
                 {!isFetching && !hasMore && sortedCourses.length > 0 && (
-                    <p className="text-xs text-gray-400 font-normal">
-                        You've reached the end of the catalog.
-                    </p>
+                    <div className="text-center">
+                        <div className="h-px w-16 bg-gray-200 mx-auto mb-3" />
+                        <p className="text-xs font-medium text-gray-400 tracking-wide">
+                            You've unlocked the entire directory boundary line.
+                        </p>
+                    </div>
                 )}
             </div>
         </div>
