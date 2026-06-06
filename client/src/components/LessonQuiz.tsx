@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import type { ToastType } from "./Toast";
 
 interface QuizQuestion {
     question: string;
@@ -11,9 +12,10 @@ interface QuizQuestion {
 interface LessonQuizProps {
     courseId?: string;
     lessonId: string;
+    showToast?: (message: string, type: ToastType) => void;
 }
 
-export const LessonQuiz: React.FC<LessonQuizProps> = ({ courseId, lessonId }) => {
+export const LessonQuiz: React.FC<LessonQuizProps> = ({ courseId, lessonId, showToast }) => {
     const [quizData, setQuizData] = useState<QuizQuestion[] | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
@@ -41,7 +43,9 @@ export const LessonQuiz: React.FC<LessonQuizProps> = ({ courseId, lessonId }) =>
             setQuizData(response.data.quiz);
         } catch (error) {
             console.error("Failed to load quiz asset:", error);
-            alert("Could not generate a quiz for this module right now.");
+            if (showToast) {
+                showToast("Could not generate a quiz for this module right now.", "error");
+            }
         } finally {
             setIsLoading(false);
         }

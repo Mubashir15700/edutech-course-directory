@@ -33,14 +33,14 @@ export const coursesApi = createApi({
         }),
 
         getInfiniteCourses: builder.query<CoursesResponse, GetCoursesArgs>({
-            query: ({ page = 1, limit = 6, search = "", category = "" }) => ({
+            query: ({ page = 1, limit = 6, search = "", category = "", tag = "" }) => ({
                 url: "/courses",
-                params: { page, limit, search, category },
+                params: { page, limit, search, category, tag },
             }),
             // Groups cache chunks securely by filters, skipping page indexing counters
             serializeQueryArgs: ({ endpointName, queryArgs }) => {
-                const { search, category } = queryArgs;
-                return `${endpointName}-${category || ""}-${search || ""}`;
+                const { search, category, tag } = queryArgs;
+                return `${endpointName}-${category || ""}-${search || ""}-${tag || ""}`;
             },
             // Accumulates state blocks continuously
             merge: (currentCache, newItems, { arg }) => {

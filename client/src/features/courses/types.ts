@@ -49,6 +49,7 @@ export interface GetCoursesArgs {
     limit?: number;
     search?: string;
     category?: string;
+    tag?: string;
 }
 
 export interface CourseDetailResponse {

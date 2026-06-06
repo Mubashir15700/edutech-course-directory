@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useGetProfileQuery, useCompleteLessonMutation } from "../features/users/usersApi";
 import { LessonQuiz } from "../components/LessonQuiz";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -8,6 +8,8 @@ import Toast, { type ToastType } from "../components/Toast";
 export default function CoursePlayer() {
     const { id: courseId } = useParams();
     const { data: user, isLoading } = useGetProfileQuery();
+    const navigate = useNavigate();
+
     const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
     const [completeLesson] = useCompleteLessonMutation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -58,15 +60,20 @@ export default function CoursePlayer() {
             {/* TOP HEADER LAYER */}
             <header className="flex h-16 shrink-0 items-center justify-between border-b border-gray-800 bg-gray-900/50 px-4 sm:px-6 backdrop-blur-md z-20">
                 <div className="flex items-center space-x-3 min-w-0">
-                    <Link
-                        to={`/courses/${activeCourseTrack._id}`}
+                    <button
+                        onClick={() => navigate(-1)}
                         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-800 text-gray-400 transition-all hover:bg-gray-700 hover:text-white"
                     >
                         ←
-                    </Link>
+                    </button>
                     <div className="min-w-0">
                         <div className="flex items-center space-x-1 text-[10px] sm:text-xs text-gray-400">
-                            <span className="truncate max-w-[80px] sm:max-w-none hover:underline cursor-pointer">My Courses</span>
+                            <span
+                                className="truncate max-w-[80px] sm:max-w-none hover:underline cursor-pointer"
+                                onClick={() => navigate("/my-learning")}
+                            >
+                                My Learning
+                            </span>
                             <span>/</span>
                             <span className="truncate text-gray-300">{activeCourseTrack.category}</span>
                         </div>
@@ -107,7 +114,7 @@ export default function CoursePlayer() {
                 <main className="flex flex-1 flex-col overflow-y-auto bg-gray-900/20 p-4 sm:p-6 lg:p-8 justify-center">
                     {activeLesson ? (
                         <div className="mx-auto w-full max-w-4xl space-y-4 my-auto">
-                            <div className="group relative aspect-video w-full overflow-hidden rounded-xl sm:rounded-2xl border border-gray-800/80 bg-black shadow-2xl transition-all duration-300">
+                            <div className="mt-0 lg:mt-[200px] group relative aspect-video w-full overflow-hidden rounded-xl sm:rounded-2xl border border-gray-800/80 bg-black shadow-2xl transition-all duration-300">
                                 {activeLesson.videoUrl ? (
                                     <video
                                         key={activeLesson._id}
@@ -136,7 +143,11 @@ export default function CoursePlayer() {
                             <div className="grid grid-cols-1 w-full">
                                 <div className="mt-7">
                                     {/* New interactive AI companion */}
-                                    <LessonQuiz courseId={courseId} lessonId={activeLesson._id} />
+                                    <LessonQuiz
+                                        courseId={courseId}
+                                        lessonId={activeLesson._id}
+                                        showToast={showToast}
+                                    />
                                 </div>
                             </div>
                         </div>

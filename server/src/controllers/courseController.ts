@@ -11,11 +11,13 @@ import { logger } from "../utils/logger";
 const CACHE_TTL = 900; // 15 minutes in seconds
 
 export const getCourses = async (req: Request, res: Response) => {
-    const { page = "1", limit = "6", search = "", category = "", isAdmin = "false" } = req.query;
+    const {
+        page = "1", limit = "6", search = "", category = "", tag = "", isAdmin = "false"
+    } = req.query;
     const isAdminBool = isAdmin === "true";
 
     // Generate a unique cache key based on query filters and page indexing
-    const cacheKey = `courses:page=${page}:limit=${limit}:search=${search}:cat=${category}:admin=${isAdmin}`;
+    const cacheKey = `courses:page=${page}:limit=${limit}:search=${search}:cat=${category}:tag=${tag}:admin=${isAdmin}`;
 
     try {
         // Try fetching from Redis RAM
@@ -40,6 +42,11 @@ export const getCourses = async (req: Request, res: Response) => {
     }
     if (category) {
         query.category = category;
+    }
+    if (tag) {
+        query.tags = {
+            $in: [tag]
+        };
     }
 
     const courses = await Course.find(query)

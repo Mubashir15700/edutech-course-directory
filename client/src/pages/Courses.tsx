@@ -8,6 +8,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 function Courses() {
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("");
+    const [tag, setTag] = useState("");
     const [sort, setSort] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -19,6 +20,7 @@ function Courses() {
         limit: 6,
         search,
         category,
+        tag
     });
 
     const sortedCourses = [...(data?.data || [])].sort((a, b) => {
@@ -44,12 +46,13 @@ function Courses() {
 
     useEffect(() => {
         setCategory(urlParams.get("category") || "");
+        setTag(urlParams.get("tag") || "");
     }, []);
 
     // Reset page on filter change
     useEffect(() => {
         setCurrentPage(1);
-    }, [search, category, sort]);
+    }, [search, category, tag, sort]);
 
     return (
         <div className="max-w-6xl mx-auto">

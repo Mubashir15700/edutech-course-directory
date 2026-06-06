@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
     useGetCourseByIdQuery,
     useToggleLikeReviewMutation,
@@ -148,9 +148,13 @@ export default function CourseDetails() {
                             {/* Tags list component */}
                             <div className="flex flex-wrap gap-2 mt-6">
                                 {course.data.tags.map((tag) => (
-                                    <span key={tag} className="px-2.5 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-md">
+                                    <Link
+                                        key={tag}
+                                        to={`/courses?tag=${encodeURIComponent(tag)}`}
+                                        className="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-medium rounded-md"
+                                    >
                                         #{tag}
-                                    </span>
+                                    </Link>
                                 ))}
                             </div>
                         </div>
