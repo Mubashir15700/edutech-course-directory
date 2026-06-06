@@ -13,9 +13,11 @@ export interface Course {
 }
 
 interface Lesson {
+    _id?: string;
     title: string;
     duration: string;
     isFreePreview: boolean;
+    videoUrl: string;
 }
 
 export interface Review {

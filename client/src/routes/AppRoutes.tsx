@@ -60,11 +60,7 @@ export default function AppRoutes() {
                     <MyLearning />
                 </ProtectedRoute>
             } />
-            <Route path="/courses/:id/lecture" element={
-                <ProtectedRoute>
-                    <CoursePlayer />
-                </ProtectedRoute>
-            } />
+            <Route path="/courses/:id/lecture/:lessonId" element={<CoursePlayer />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
 
             {/* Admin */}

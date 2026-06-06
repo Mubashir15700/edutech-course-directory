@@ -9,9 +9,10 @@ interface EnrollButtonProps {
     isPriceFree: boolean;
     user?: string;
     isAlreadyEnrolled?: boolean;
+    targetLessonId?: string; // Optional prop to specify a target lesson for redirection after enrollment
 }
 
-export default function EnrollButton({ courseId, isPriceFree, user, isAlreadyEnrolled }: EnrollButtonProps) {
+export default function EnrollButton({ courseId, isPriceFree, user, isAlreadyEnrolled, targetLessonId }: EnrollButtonProps) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -42,7 +43,7 @@ export default function EnrollButton({ courseId, isPriceFree, user, isAlreadyEnr
                 window.location.href = response.url;
             } else {
                 // Free track unlocks instantly, navigate to classroom dashboard
-                navigate(`/courses/${courseId}/lecture`);
+                navigate(`/courses/${courseId}/lecture/${targetLessonId || ""}`);
             }
         } catch (error: any) {
             showToast("Enrollment processing failed. Please try again.", "error");
@@ -52,7 +53,7 @@ export default function EnrollButton({ courseId, isPriceFree, user, isAlreadyEnr
     if (isAlreadyEnrolled) {
         return (
             <button
-                onClick={() => navigate(`/courses/${courseId}/lecture`)}
+                onClick={() => navigate(`/courses/${courseId}/lecture/${targetLessonId || ""}`)}
                 className="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-xl transition shadow-md tracking-wide text-sm"
             >
                 Resume Learning Progress →

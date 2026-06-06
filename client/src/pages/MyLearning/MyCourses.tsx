@@ -33,47 +33,53 @@ const MyCourses = ({ user, completedCoursesCount }: { user: IUser; completedCour
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {user.enrolledCourses.map((course) => (
-                            <div key={course._id} className="bg-white border border-gray-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-200 flex flex-col">
-                                <div className="h-32 bg-gray-100 relative">
-                                    {course.thumbnail && <img src={course.thumbnail} alt={course.name} className="w-full h-full object-cover" />}
-                                    <span className="absolute bottom-3 left-3 text-[10px] font-bold bg-gray-900/80 backdrop-blur-sm text-white px-2 py-0.5 rounded uppercase tracking-wider">
-                                        {course.category || "General"}
-                                    </span>
-                                </div>
+                        {user.enrolledCourses.map((course) => {
+                            const completedLessons = course?.completedLessons || [];
+                            const nextUncompletedLesson = course?.lessons.find((lesson: any) => !completedLessons.includes(lesson._id));
+                            const targetLessonId = nextUncompletedLesson?._id || course?.lessons[0]?._id;
 
-                                <div className="p-5 flex-grow flex flex-col justify-between">
-                                    <div>
-                                        <h3 className="font-bold text-gray-900 text-base line-clamp-1 mb-1">{course.name}</h3>
-                                        <p className="text-xs text-gray-400 font-medium mb-4">By {course.instructor || "Platform Instructor"}</p>
-
-                                        {/* Progress Metrics Area */}
-                                        <div className="space-y-1.5 mb-4">
-                                            <div className="flex justify-between text-xs font-bold text-gray-500">
-                                                <span>Course Progress</span>
-                                                <span className="text-blue-600">{course.progress}%</span>
-                                            </div>
-                                            <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                                                <div className="bg-blue-600 h-full rounded-full transition-all duration-300" style={{ width: `${course.progress}%` }}></div>
-                                            </div>
-                                        </div>
+                            return (
+                                <div key={course._id} className="bg-white border border-gray-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-200 flex flex-col">
+                                    <div className="h-32 bg-gray-100 relative">
+                                        {course.thumbnail && <img src={course.thumbnail} alt={course.name} className="w-full h-full object-cover" />}
+                                        <span className="absolute bottom-3 left-3 text-[10px] font-bold bg-gray-900/80 backdrop-blur-sm text-white px-2 py-0.5 rounded uppercase tracking-wider">
+                                            {course.category || "General"}
+                                        </span>
                                     </div>
 
-                                    <div className="pt-3 border-t border-gray-50 mt-auto flex flex-col gap-3">
-                                        <div className="text-xs text-gray-500 truncate">
-                                            <span className="font-bold text-gray-400 block uppercase text-[9px] tracking-wider">Course Data</span>
-                                            <span className="font-medium text-gray-700">Lectures Available</span>
+                                    <div className="p-5 flex-grow flex flex-col justify-between">
+                                        <div>
+                                            <h3 className="font-bold text-gray-900 text-base line-clamp-1 mb-1">{course.name}</h3>
+                                            <p className="text-xs text-gray-400 font-medium mb-4">By {course.instructor || "Platform Instructor"}</p>
+
+                                            {/* Progress Metrics Area */}
+                                            <div className="space-y-1.5 mb-4">
+                                                <div className="flex justify-between text-xs font-bold text-gray-500">
+                                                    <span>Course Progress</span>
+                                                    <span className="text-blue-600">{course.progress}%</span>
+                                                </div>
+                                                <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                                                    <div className="bg-blue-600 h-full rounded-full transition-all duration-300" style={{ width: `${course.progress}%` }}></div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <Link
-                                            to={`/courses/${course._id}/lecture`}
-                                            className="w-full text-center py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-xl text-xs font-semibold transition"
-                                        >
-                                            Resume Lecture Series →
-                                        </Link>
+
+                                        <div className="pt-3 border-t border-gray-50 mt-auto flex flex-col gap-3">
+                                            <div className="text-xs text-gray-500 truncate">
+                                                <span className="font-bold text-gray-400 block uppercase text-[9px] tracking-wider">Course Data</span>
+                                                <span className="font-medium text-gray-700">Lectures Available</span>
+                                            </div>
+                                            <Link
+                                                to={`/courses/${course._id}/lecture/${targetLessonId}`}
+                                                className="w-full text-center py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-xl text-xs font-semibold transition"
+                                            >
+                                                Resume Lecture Series →
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            )
+                        })}
                     </div>
                 )}
             </div>

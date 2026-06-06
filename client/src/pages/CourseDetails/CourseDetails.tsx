@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
     useGetCourseByIdQuery,
     useToggleLikeReviewMutation,
@@ -14,11 +14,12 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import CourseNotFound from "../../components/CourseNotFound";
 import EnrollButton from "../../components/EnrollButton";
 import BackButton from "../../components/BackButton";
-import type { ToastType } from "../../components/Toast";
-import Toast from "../../components/Toast";
+import Toast, { type ToastType } from "../../components/Toast";
 
 export default function CourseDetails() {
     const { id } = useParams<{ id: string }>();
+
+    const navigate = useNavigate();
 
     const token = localStorage.getItem("token");
 
@@ -49,7 +50,6 @@ export default function CourseDetails() {
     const allReviews = course?.data?.reviews || [];
     const userReview = allReviews.find((rev: any) => rev.user?._id === user?._id);
     const otherReviews = allReviews.filter((rev: any) => rev.user?._id !== user?._id);
-
 
     const starBreakdown = useMemo(() => {
         return calculateStarBreakdown(otherReviews, userReview);
@@ -107,10 +107,20 @@ export default function CourseDetails() {
                 await deleteReview({ reviewId, courseId: id || "" }).unwrap();
                 setIsEditingMyReview(false);
             } catch (err) {
-                console.error("Failed to delete review", err);
+                showToast("Failed to delete review", "error");
             }
         }
     };
+
+    const handleLessonClick = (lessonId?: string) => {
+        if (!lessonId) return;
+        navigate(`/courses/${id}/lecture/${lessonId}`);
+    };
+
+    const userCourseTrack = user?.enrolledCourses?.find((c: any) => c._id === id);
+    const completedLessons = userCourseTrack?.completedLessons || [];
+    const nextUncompletedLesson = course.data.lessons.find((lesson: any) => !completedLessons.includes(lesson._id));
+    const targetLessonId = nextUncompletedLesson?._id || course.data.lessons[0]?._id;
 
     return (
         <div className="min-h-screen bg-gray-50/50 pb-16">
@@ -179,9 +189,23 @@ export default function CourseDetails() {
                                                 </span>
                                                 <div>
                                                     <p className="text-sm font-medium text-gray-800">{lesson.title}</p>
-                                                    {lesson.isFreePreview && (
-                                                        <span className="inline-block bg-green-50 text-green-700 text-[10px] font-bold uppercase px-1.5 py-0.5 rounded mt-1">
-                                                            Free Preview Lecture
+                                                    {isAlreadyEnrolled ? (
+                                                        <button
+                                                            onClick={() => handleLessonClick(lesson?._id)}
+                                                            className="flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold rounded-lg hover:bg-blue-100 transition shadow-sm"
+                                                        >
+                                                            ▶ Watch Lecture
+                                                        </button>
+                                                    ) : lesson.isFreePreview ? (
+                                                        <button
+                                                            onClick={() => handleLessonClick(lesson?._id)}
+                                                            className="flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold rounded-lg hover:bg-emerald-100 transition"
+                                                        >
+                                                            ▶ Play Preview
+                                                        </button>
+                                                    ) : (
+                                                        <span className="text-xs font-medium text-gray-400 bg-gray-50 border border-gray-200/60 px-2.5 py-1.5 rounded-lg flex items-center gap-1 select-none">
+                                                            🔒 Locked
                                                         </span>
                                                     )}
                                                 </div>
@@ -250,6 +274,7 @@ export default function CourseDetails() {
                                             isPriceFree={course.data.price === 0}
                                             user={user?._id}
                                             isAlreadyEnrolled={isAlreadyEnrolled}
+                                            targetLessonId={targetLessonId}
                                         />
                                     </div>
                                 )}
