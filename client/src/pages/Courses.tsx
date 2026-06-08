@@ -55,7 +55,7 @@ function Courses() {
     }, [search, category, tag, sort]);
 
     return (
-        <div className="max-w-6xl mx-auto py-2">
+        <div className="max-w-7xl mx-auto p-5">
             {/* Title Section */}
             <div className="text-center mb-10">
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-2">

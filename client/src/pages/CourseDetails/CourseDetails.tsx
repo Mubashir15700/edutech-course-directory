@@ -123,7 +123,7 @@ export default function CourseDetails() {
     const targetLessonId = nextUncompletedLesson?._id || course.data.lessons[0]?._id;
 
     return (
-        <div className="min-h-screen bg-gray-50/50 pb-16">
+        <div className="min-h-screen bg-gray-50/50 pb-16 p-5">
             {/* Top Navigation Banner */}
             <BackButton />
 

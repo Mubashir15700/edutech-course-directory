@@ -50,7 +50,7 @@ export default function MyLearning() {
     }
 
     return (
-        <div className="min-h-[calc(100vh-64px)] bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+        <div className="min-h-[calc(100vh-64px)] bg-gray-50/50 p-4 sm:p-6 lg:p-6">
             <div className="max-w-5xl mx-auto">
                 <BackButton />
 

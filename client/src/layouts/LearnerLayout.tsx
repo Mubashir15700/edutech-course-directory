@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
+import CourseFooter from "../components/CourseFooter";
 import { LearnerChatWidget } from '../components/LearnerChatWidget';
 
 export default function LearnerLayout() {
@@ -18,9 +19,11 @@ export default function LearnerLayout() {
         <div className="min-h-screen bg-gray-50">
             <Header />
 
-            <main className="p-6 max-w-6xl mx-auto">
+            <main className="pt-2">
                 <Outlet />
             </main>
+
+            <CourseFooter />
 
             {user?.role === "learner" && (
                 <LearnerChatWidget user={user} />

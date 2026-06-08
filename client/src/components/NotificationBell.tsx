@@ -50,7 +50,7 @@ export default function NotificationBell() {
 
                     {/* Header Controls */}
                     <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 bg-gray-50/50 rounded-t-2xl">
-                        <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider">Notifications</h3>
+                        <h3 className="text-xs font-bold text-gray-900 tracking-wider">Notifications</h3>
                         {hasUnread && (
                             <button
                                 onClick={() => markAllRead()}

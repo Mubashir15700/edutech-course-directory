@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import type { ToastType } from "./Toast";
+import QuizLoading from "./QuizLoading";
 
 interface QuizQuestion {
     question: string;
@@ -61,7 +62,9 @@ export const LessonQuiz: React.FC<LessonQuizProps> = ({ courseId, lessonId, show
                     disabled={isLoading}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2.5 px-4 rounded-lg transition-colors disabled:bg-blue-300"
                 >
-                    {isLoading ? "Generating with Gemini AI..." : "Launch Knowledge Quiz"}
+                    {isLoading ?
+                        <QuizLoading />
+                        : "Launch Knowledge Quiz"}
                 </button>
             </div>
         );
@@ -105,6 +108,15 @@ export const LessonQuiz: React.FC<LessonQuizProps> = ({ courseId, lessonId, show
         } else {
             setQuizComplete(true);
         }
+    };
+
+    const handleCloseQuiz = () => {
+        setQuizData(null);
+        setCurrentQuestionIdx(0);
+        setSelectedOption(null);
+        setIsSubmitted(false);
+        setScore(0);
+        setQuizComplete(false);
     };
 
     return (
@@ -168,24 +180,32 @@ export const LessonQuiz: React.FC<LessonQuizProps> = ({ courseId, lessonId, show
                 </div>
             )}
 
-            {/* Action Buttons Footer Row */}
-            <div className="flex justify-end mt-1">
-                {!isSubmitted ? (
-                    <button
-                        onClick={handleSubmitAnswer}
-                        disabled={selectedOption === null}
-                        className="bg-gray-900 text-white font-bold text-xs py-2 px-4 rounded-lg hover:bg-gray-800 transition disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                    >
-                        Submit Answer
-                    </button>
-                ) : (
-                    <button
-                        onClick={handleNextQuestion}
-                        className="bg-blue-600 text-white font-bold text-xs py-2 px-5 rounded-lg hover:bg-blue-700 transition"
-                    >
-                        {currentQuestionIdx + 1 === quizData.length ? "Finish Quiz" : "Next Question →"}
-                    </button>
-                )}
+            <div className="flex items-center justify-between mt-6 border-t border-gray-100 pt-4">
+                <button
+                    onClick={handleCloseQuiz}
+                    className="text-xs font-semibold text-gray-400 hover:text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-50 transition duration-150 select-none"
+                >
+                    Cancel & Close
+                </button>
+
+                <div className="flex items-center space-x-2">
+                    {!isSubmitted ? (
+                        <button
+                            onClick={handleSubmitAnswer}
+                            disabled={selectedOption === null}
+                            className="bg-gray-900 text-white font-bold text-xs py-2 px-4 rounded-lg hover:bg-gray-800 transition disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed shadow-sm"
+                        >
+                            Submit Answer
+                        </button>
+                    ) : (
+                        <button
+                            onClick={handleNextQuestion}
+                            className="bg-blue-600 text-white font-bold text-xs py-2 px-5 rounded-lg hover:bg-blue-700 transition shadow-md shadow-blue-500/10 active:scale-95 duration-150"
+                        >
+                            {currentQuestionIdx + 1 === quizData.length ? "Finish Quiz" : "Next Question →"}
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );

@@ -1,8 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import NotificationBell from "./NotificationBell";
 
 export default function Header() {
     const navigate = useNavigate();
+    const location = useLocation();
     const user = JSON.parse(localStorage.getItem("user") || "null");
 
     const handleLogout = () => {
@@ -10,6 +11,8 @@ export default function Header() {
         localStorage.removeItem("user");
         navigate("/login");
     };
+
+    const isMyLearningPage = location.pathname === "/my-learning";
 
     return (
         <header className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-gray-100 px-3 sm:px-6 py-2.5 flex justify-between items-center transition-all">
@@ -42,8 +45,11 @@ export default function Header() {
                             {/* Profile Pill - Automatically hides label text on small viewports to save room */}
                             <Link
                                 to="/my-learning"
-                                className="flex items-center gap-1.5 p-1 sm:pl-1.5 sm:pr-3 bg-gray-50 hover:bg-blue-50/50 border border-gray-100 rounded-full group transition-all duration-200 focus:outline-none"
-                                title="Open student learning suite"
+                                className={`flex items-center gap-1.5 p-1 sm:pl-1.5 sm:pr-3 border rounded-full group transition-all duration-200 focus:outline-none ${isMyLearningPage
+                                    ? "bg-blue-50 border-blue-200 text-blue-600"
+                                    : "bg-gray-50 hover:bg-blue-50/50 border-gray-100"
+                                    }`}
+                                aria-current={isMyLearningPage ? "page" : undefined}
                             >
                                 <div className="w-6 h-6 sm:w-7 sm:h-7 bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center rounded-full font-bold uppercase text-[10px] sm:text-xs shadow-sm">
                                     {user?.name?.charAt(0) || "U"}
